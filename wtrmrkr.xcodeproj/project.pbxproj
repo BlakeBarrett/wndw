@@ -13,6 +13,7 @@
 		256BAA781CF3975A0005079A /* wtrmrkr.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA761CF3975A0005079A /* wtrmrkr.xcdatamodeld */; };
 		256BAA7A1CF3975A0005079A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA791CF3975A0005079A /* Assets.xcassets */; };
 		256BAA7D1CF3975A0005079A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA7B1CF3975A0005079A /* LaunchScreen.storyboard */; };
+		256BAA881CF3A8A40005079A /* VideoMaskingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		256BAA791CF3975A0005079A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		256BAA7C1CF3975A0005079A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		256BAA7E1CF3975A0005079A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMaskingUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +58,40 @@
 		256BAA6E1CF3975A0005079A /* wtrmrkr */ = {
 			isa = PBXGroup;
 			children = (
+				256BAA851CF3976A0005079A /* Views */,
+				256BAA841CF397610005079A /* Controllers */,
+				256BAA861CF3977A0005079A /* Etc */,
+			);
+			path = wtrmrkr;
+			sourceTree = "<group>";
+		};
+		256BAA841CF397610005079A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
 				256BAA6F1CF3975A0005079A /* AppDelegate.swift */,
 				256BAA711CF3975A0005079A /* ViewController.swift */,
+				256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		256BAA851CF3976A0005079A /* Views */ = {
+			isa = PBXGroup;
+			children = (
 				256BAA731CF3975A0005079A /* Main.storyboard */,
 				256BAA791CF3975A0005079A /* Assets.xcassets */,
 				256BAA7B1CF3975A0005079A /* LaunchScreen.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		256BAA861CF3977A0005079A /* Etc */ = {
+			isa = PBXGroup;
+			children = (
 				256BAA7E1CF3975A0005079A /* Info.plist */,
 				256BAA761CF3975A0005079A /* wtrmrkr.xcdatamodeld */,
 			);
-			path = wtrmrkr;
+			name = Etc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,6 +165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				256BAA881CF3A8A40005079A /* VideoMaskingUtils.swift in Sources */,
 				256BAA721CF3975A0005079A /* ViewController.swift in Sources */,
 				256BAA781CF3975A0005079A /* wtrmrkr.xcdatamodeld in Sources */,
 				256BAA701CF3975A0005079A /* AppDelegate.swift in Sources */,

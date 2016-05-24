@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +18,68 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <imageView tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YF6-by-BuG">
+                                <rect key="frame" x="20" y="40" width="560" height="315"/>
+                                <color key="backgroundColor" red="0.7019608021" green="0.7019608021" blue="0.7019608021" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="YF6-by-BuG" secondAttribute="height" multiplier="16:9" id="LpI-6g-0QE"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="5KY-Mn-dmP" appends="YES" id="DDb-bb-w9Z"/>
+                                </connections>
+                            </imageView>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xnu-fV-WVj">
+                                <rect key="frame" x="380" y="380" width="200" height="200"/>
+                                <color key="backgroundColor" red="0.7019608021" green="0.7019608021" blue="0.7019608021" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="1Kc-3R-EGK"/>
+                                    <constraint firstAttribute="width" constant="200" id="7Ff-pS-L5v"/>
+                                    <constraint firstAttribute="width" secondItem="Xnu-fV-WVj" secondAttribute="height" multiplier="1:1" id="nZr-b5-UNH"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Glx-IN-Ggp" appends="YES" id="JXS-nt-QKZ"/>
+                                </connections>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQH-Ct-4tW">
+                                <rect key="frame" x="20" y="550" width="46" height="30"/>
+                                <state key="normal" title="Export"/>
+                                <connections>
+                                    <action selector="onExportButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hQj-AQ-C02"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="YF6-by-BuG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="6nT-eU-DjT"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Xnu-fV-WVj" secondAttribute="bottom" constant="20" id="7QK-9k-IPj"/>
+                            <constraint firstItem="qQH-Ct-4tW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="GvH-WY-So8"/>
+                            <constraint firstItem="YF6-by-BuG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="J2W-Bm-Eme"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qQH-Ct-4tW" secondAttribute="bottom" constant="20" id="Pfg-1L-ogp"/>
+                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="Uvv-R9-BK7"/>
+                            <constraint firstItem="YF6-by-BuG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="nK9-9i-Ryn"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="videoThumbnailImageView" destination="YF6-by-BuG" id="G5l-wi-sTG"/>
+                        <outlet property="watermarkThumbnailImage" destination="Xnu-fV-WVj" id="Bqy-Dm-9jM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="5KY-Mn-dmP" userLabel="Video Thumbnail Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="onVideoThumbnailTap:" destination="BYZ-38-t0r" id="5cv-XK-Ryl"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="Glx-IN-Ggp" userLabel="Image Thumbnail Tap Gesture Recognizer">
+                    <connections>
+                        <action selector="onWatermarkThumbnailTap:" destination="BYZ-38-t0r" id="BD1-HL-emh"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
+            <point key="canvasLocation" x="301" y="389"/>
         </scene>
     </scenes>
 </document>
