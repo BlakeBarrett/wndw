@@ -69,7 +69,18 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     @IBAction func onScaleSliderValueChange(sender: UISlider) {
-        // TODO: Figure out how to scale the image appropriately
+        let value = CGFloat(sender.value)
+        
+        let xScale = ((self.fullsizeWatermarkOriginalImage?.size.width)! / (self.videoThumbnailImageView.image?.size.width)!) / value
+        let yScale = ((self.fullsizeWatermarkOriginalImage?.size.height)! / (self.videoThumbnailImageView.image?.size.height)!) / value
+        
+        let frame = self.watermarkThumbnailImage.frame
+        let width = max((frame.width * xScale), 0.1)
+        let height = max((frame.height * yScale), 0.1)
+        let newFrame = CGRectMake(frame.origin.x, frame.origin.y, width, height)
+        
+        self.watermarkThumbnailImage.contentMode = UIViewContentMode.ScaleAspectFit
+        self.watermarkThumbnailImage.image = ImageMaskingUtils.crop(self.fullsizeWatermarkOriginalImage!, inRect: newFrame)
     }
     
     @IBAction func onXSliderValueChange(sender: UISlider) {

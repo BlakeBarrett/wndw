@@ -126,7 +126,7 @@
                                             <action selector="onAlphaSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="Ioe-Id-L5u"/>
                                         </connections>
                                     </slider>
-                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
+                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
                                         <rect key="frame" x="60" y="38" width="494" height="31"/>
                                         <color key="tintColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>

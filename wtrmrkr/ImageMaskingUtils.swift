@@ -188,6 +188,11 @@ class ImageMaskingUtils {
         return image
     }
     
+    class func crop(image: UIImage, inRect rect: CGRect) -> UIImage {
+        let imageRef = CGImageCreateWithImageInRect(image.CGImage, rect)
+        return UIImage(CGImage: imageRef!)
+    }
+    
     class func fit(image:UIImage, inSize: CGSize) -> UIImage {
         let size = inSize
         let originalAspectRatio = image.size.width / image.size.height
