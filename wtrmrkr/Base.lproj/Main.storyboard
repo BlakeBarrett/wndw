@@ -10,7 +10,7 @@
         <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="wndw" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -159,7 +159,7 @@
         <!--LoadingIndicatorView-->
         <scene sceneID="FcQ-Tn-bYn">
             <objects>
-                <viewController storyboardIdentifier="LoadingIndicatorView" title="LoadingIndicatorView" modalPresentationStyle="overCurrentContext" id="ZLR-19-tSp" customClass="ProgressViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoadingIndicatorView" title="LoadingIndicatorView" modalPresentationStyle="overCurrentContext" id="ZLR-19-tSp" customClass="ProgressViewController" customModule="wndw" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="TQv-ch-zeE"/>
                         <viewControllerLayoutGuide type="bottom" id="Wfq-Tm-tVv"/>

@@ -21,7 +21,7 @@
 /* Begin PBXFileReference section */
 		2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMaskingUtils.swift; sourceTree = "<group>"; };
 		2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
-		256BAA6C1CF3975A0005079A /* wtrmrkr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wtrmrkr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		256BAA6C1CF3975A0005079A /* wndw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wndw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		256BAA6F1CF3975A0005079A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		256BAA711CF3975A0005079A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		256BAA741CF3975A0005079A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 		256BAA631CF3975A0005079A = {
 			isa = PBXGroup;
 			children = (
-				256BAA6E1CF3975A0005079A /* wtrmrkr */,
+				256BAA6E1CF3975A0005079A /* wndw */,
 				256BAA6D1CF3975A0005079A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,18 +54,19 @@
 		256BAA6D1CF3975A0005079A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				256BAA6C1CF3975A0005079A /* wtrmrkr.app */,
+				256BAA6C1CF3975A0005079A /* wndw.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		256BAA6E1CF3975A0005079A /* wtrmrkr */ = {
+		256BAA6E1CF3975A0005079A /* wndw */ = {
 			isa = PBXGroup;
 			children = (
 				256BAA851CF3976A0005079A /* Views */,
 				256BAA841CF397610005079A /* Controllers */,
 				256BAA861CF3977A0005079A /* Etc */,
 			);
+			name = wndw;
 			path = wtrmrkr;
 			sourceTree = "<group>";
 		};
@@ -103,9 +104,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		256BAA6B1CF3975A0005079A /* wtrmrkr */ = {
+		256BAA6B1CF3975A0005079A /* wndw */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 256BAA811CF3975A0005079A /* Build configuration list for PBXNativeTarget "wtrmrkr" */;
+			buildConfigurationList = 256BAA811CF3975A0005079A /* Build configuration list for PBXNativeTarget "wndw" */;
 			buildPhases = (
 				256BAA681CF3975A0005079A /* Sources */,
 				256BAA691CF3975A0005079A /* Frameworks */,
@@ -115,9 +116,9 @@
 			);
 			dependencies = (
 			);
-			name = wtrmrkr;
+			name = wndw;
 			productName = wtrmrkr;
-			productReference = 256BAA6C1CF3975A0005079A /* wtrmrkr.app */;
+			productReference = 256BAA6C1CF3975A0005079A /* wndw.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -135,7 +136,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 256BAA671CF3975A0005079A /* Build configuration list for PBXProject "wtrmrkr" */;
+			buildConfigurationList = 256BAA671CF3975A0005079A /* Build configuration list for PBXProject "wndw" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -148,7 +149,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				256BAA6B1CF3975A0005079A /* wtrmrkr */,
+				256BAA6B1CF3975A0005079A /* wndw */,
 			);
 		};
 /* End PBXProject section */
@@ -293,7 +294,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = wtrmrkr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.blakebarrett.wtrmrkr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.blakebarrett.wndw;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -304,7 +305,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = wtrmrkr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.blakebarrett.wtrmrkr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.blakebarrett.wndw;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -312,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		256BAA671CF3975A0005079A /* Build configuration list for PBXProject "wtrmrkr" */ = {
+		256BAA671CF3975A0005079A /* Build configuration list for PBXProject "wndw" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				256BAA7F1CF3975A0005079A /* Debug */,
@@ -321,7 +322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		256BAA811CF3975A0005079A /* Build configuration list for PBXNativeTarget "wtrmrkr" */ = {
+		256BAA811CF3975A0005079A /* Build configuration list for PBXNativeTarget "wndw" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				256BAA821CF3975A0005079A /* Debug */,
