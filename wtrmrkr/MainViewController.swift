@@ -9,14 +9,16 @@
 import UIKit
 import MobileCoreServices
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MainViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var watermarkThumbnailImage: UIImageView!
     @IBOutlet weak var videoThumbnailImageView: UIImageView!
     
+    @IBOutlet weak var alphaSliderView: UISlider!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.alphaSliderView.enabled = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,12 +55,42 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func onWatermarkThumbnailTap(sender: UITapGestureRecognizer) {
         self.browseForMediaType([kUTTypeImage as String])
+        self.alphaSliderView.enabled = true
     }
     
+    
+    @IBAction func onAlphaSliderValueChange(sender: UISlider) {
+        self.overlayAlpha = Float(sender.value)
+        self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
+    }
+    
+    var overlayAlpha = Float(1.0)
     @IBAction func onExportButtonClick(sender: UIButton) {
-        let image = self.watermarkThumbnailImage.image!
-        let video = VideoMaskingUtils.getAVAssetAt(self.moviePath!)
-        VideoMaskingUtils.overlay(video: video, withImage: image, atRect: nil)
+        guard let image = self.watermarkThumbnailImage.image else { return }
+        guard let path = self.moviePath else { return }
+        let video = VideoMaskingUtils.getAVAssetAt(path)
+        
+        let videoSize = self.videoThumbnailImageView.image?.size
+        let img = ImageMaskingUtils.fit(image, inSize: videoSize!)
+
+        let width = img.size.width
+        let height = img.size.height
+        let left = (videoSize!.width - width) / 2
+        let top = (videoSize!.height - height) / 2
+
+        let centeredInVideoFrame = CGRectMake(left, top, width, height)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
+            self.hideSpinner()
+            if let error = message.object {
+                print(error)
+            }
+        }
+        self.showSpinner()
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            VideoMaskingUtils.overlay(video: video, withImage: img, andAlpha: self.overlayAlpha, atRect: centeredInVideoFrame)
+        }
     }
     
     func browseForMediaType(mediaTypes: Array<String>) {
@@ -98,5 +130,24 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
 
+    // MARK: Show Modal Loading Spinner
+    var loadingIndicatorView: UIViewController?
+    func showSpinner() {
+        //LoadingIndicatorView
+        if let loadingIndicatorView = self.storyboard?.instantiateViewControllerWithIdentifier("LoadingIndicatorView") {
+            self.loadingIndicatorView = loadingIndicatorView
+            loadingIndicatorView.modalPresentationStyle = .OverCurrentContext
+            self.presentViewController(loadingIndicatorView, animated: true, completion: {
+                
+            })
+        }
+    }
+    
+    func hideSpinner() {
+        guard let loadingIndicatorView = self.loadingIndicatorView else { return }
+        loadingIndicatorView.dismissViewControllerAnimated(true, completion: {
+            
+        })
+    }
 }
 

@@ -29,7 +29,7 @@ class VideoMaskingUtils {
             return UIImage(CGImage: imageRef)
         } catch let error as NSError
         {
-            print("Image generation failed with error \(error)")
+            print("VideoMaskingUtils.thumbnailImageForVideo:: Error: \(error)")
             return nil
         }
     }
@@ -38,71 +38,71 @@ class VideoMaskingUtils {
         return AVURLAsset(URL: url, options: nil)
     }
     
-    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, atRect imageRect: CGRect?) {
-        // compilation code
-        let compiledVideo = AVMutableComposition()
-        let trackVideo: AVMutableCompositionTrack = compiledVideo.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
-        //let trackAudio : AVMutableCompositionTrack = compiledVideo.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?) {
+        // Most of this code was translated into Swift 2.2 from this example here:
+        //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
         
-        let sourceDuration = CMTimeRangeMake(kCMTimeZero, sourceVideo.duration)
+        guard let videoAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
+        guard let audioAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeAudio).first else { return }
         
-        guard let videoTrack: AVAssetTrack = (sourceVideo.tracksWithMediaType(AVMediaTypeVideo).first! as AVAssetTrack) else { return }
-        //guard let audioTrack: AVAssetTrack = (sourceVideo.tracksWithMediaType(AVMediaTypeAudio).first! as AVAssetTrack) else { return }
+        let width = videoAssetTrack.naturalSize.width
+        let height = videoAssetTrack.naturalSize.height
         
-        let renderWidth = videoTrack.naturalSize.width
-        let renderHeight = videoTrack.naturalSize.height
-        
-        let renderSize = CGSizeMake(renderWidth, renderHeight)
-        let layerRect: CGRect
+        let videoFrameRect = CGRect(x: 0, y: 0, width: width, height: height)
+        let watermarkRect: CGRect
         if let imageRect = imageRect {
-            layerRect = imageRect
+            watermarkRect = imageRect
         } else {
-            layerRect = CGRect(x: 0, y: 0, width: renderWidth, height: renderHeight)
+            watermarkRect = videoFrameRect
         }
         
-        let insertTime = kCMTimeZero
-        let endTime = sourceVideo.duration
-        let range = sourceDuration
+        let mutableCompositon = AVMutableComposition()
+        let mutableVideoCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        let mutableAudioCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
+        let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, sourceVideo.duration)
         do {
-            try trackVideo.insertTimeRange(sourceDuration, ofTrack: videoTrack, atTime: insertTime)
-        } catch _ {
-            print("time range not inserted")
+            try mutableVideoCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrack, atTime: kCMTimeZero)
+            try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+        } catch (let error) {
+            print(error)
         }
         
-        // Layer stuff
-        let backgroundLayer = VideoMaskingUtils.createLayerFor(image)
-        backgroundLayer.frame = layerRect
-        backgroundLayer.opacity = 0.3
+        let watermarkLayer: CALayer  = VideoMaskingUtils.createLayerWith(image)
+        watermarkLayer.frame = watermarkRect
+        watermarkLayer.opacity = alpha
         
-        let videoLayer = CALayer()
-        videoLayer.frame = layerRect
+        let parentLayer: CALayer = CALayer()
+        parentLayer.frame = videoFrameRect
         
-        let parentLayer = CALayer()
-        parentLayer.frame = layerRect
+        let videoLayer: CALayer = CALayer()
+        videoLayer.frame = videoFrameRect
         
         parentLayer.addSublayer(videoLayer)
-        parentLayer.addSublayer(backgroundLayer)
+        parentLayer.addSublayer(watermarkLayer)
         
-        // Layer instruction stuff
-        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: trackVideo)
-        layerInstruction.setTransform(trackVideo.preferredTransform, atTime: insertTime)
-        layerInstruction.setOpacity(0.0, atTime: endTime)
+        
+        
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrack)
+        layerInstruction.setTransform(mutableVideoCompositionTrack.preferredTransform, atTime: kCMTimeZero)
+        layerInstruction.setOpacity(0.0, atTime: sourceVideoDuration.duration)
         
         let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = range
+        instruction.timeRange = sourceVideoDuration
         instruction.layerInstructions = [layerInstruction]
         
         let videoComposition = AVMutableVideoComposition(propertiesOfAsset: sourceVideo)
         videoComposition.renderScale = 1.0
-        videoComposition.renderSize = renderSize
-        videoComposition.frameDuration = CMTimeMake(1, 30)
+        videoComposition.renderSize = videoFrameRect.size
+        videoComposition.frameDuration = videoAssetTrack.minFrameDuration
         videoComposition.instructions = [instruction]
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, inLayer: parentLayer)
         
+        
+        
         let outputUrl = VideoMaskingUtils.getPathForTempFileNamed("output.mov")
         
-        VideoMaskingUtils.exportVideo(compiledVideo, toURL: outputUrl, withComposition: videoComposition)
+        VideoMaskingUtils.exportCompositedVideo(mutableCompositon, toURL: outputUrl, withVideoComposition: videoComposition)
         
         VideoMaskingUtils.removeTempFileAtPath(outputUrl.absoluteString)
     }
@@ -124,7 +124,7 @@ class VideoMaskingUtils {
         }
     }
     
-    private class func exportVideo(compiledVideo: AVMutableComposition, toURL outputUrl: NSURL, withComposition videoComposition: AVMutableVideoComposition) {
+    private class func exportCompositedVideo(compiledVideo: AVMutableComposition, toURL outputUrl: NSURL, withVideoComposition videoComposition: AVMutableVideoComposition) {
         guard let exporter = AVAssetExportSession(asset: compiledVideo, presetName: AVAssetExportPresetHighestQuality) else { return }
         exporter.outputURL = outputUrl
         exporter.videoComposition = videoComposition
@@ -132,35 +132,47 @@ class VideoMaskingUtils {
         exporter.shouldOptimizeForNetworkUse = true
         exporter.exportAsynchronouslyWithCompletionHandler({
             switch exporter.status {
-            case AVAssetExportSessionStatus.Failed:
-                if (exporter.error != nil) {
-                    print("Error: \(exporter.error)")
-                    print("Description: \(exporter.description)")
+            case .Completed:
+                // we can be confident that there is a URL because
+                // we got this far. Otherwise it would've failed.
+                UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path!, nil, nil, nil)
+                print("VideoMaskingUtils.exportVideo SUCCESS!")
+                if exporter.error != nil {
+                    print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
+                    print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
                 }
-                break
                 
-            case AVAssetExportSessionStatus.Completed:
-                let path = exporter.outputURL!.path
-                UISaveVideoAtPathToSavedPhotosAlbum(path!, nil, nil, nil)
-                print("export succeeded")
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
                 break
+            
+            case .Exporting:
+                let progress = exporter.progress
+                print("VideoMaskingUtils.exportVideo \(progress)")
                 
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportProgress", object: progress)
+                break
+            
+            case .Failed:
+                print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
+                print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                break
+            
             default: break
             }
         })
     }
     
-    class func createLayerFor(image: UIImage?) -> CALayer {
+    class func createLayerWith(image: UIImage?) -> CALayer {
         let layer = CALayer()
         guard let image = image else {
             return layer
         }
         layer.contents = image.CGImage
-        layer.frame = CGRectMake(0, 0, image.size.width / 2, image.size.height / 2)
+        layer.frame = CGRectMake(0, 0, image.size.width, image.size.height)
+        layer.position = layer.frame.origin
         layer.opacity = 1.0
-        layer.position = CGPointMake(0, -0)
-        layer.zPosition = 0.7
-        layer.masksToBounds = true
         return layer
     }
 

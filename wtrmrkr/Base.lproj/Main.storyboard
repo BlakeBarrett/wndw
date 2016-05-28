@@ -7,10 +7,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -19,9 +19,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YF6-by-BuG">
+                            <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YF6-by-BuG">
                                 <rect key="frame" x="20" y="40" width="560" height="315"/>
-                                <color key="backgroundColor" red="0.7019608021" green="0.7019608021" blue="0.7019608021" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="YF6-by-BuG" secondAttribute="height" multiplier="16:9" id="LpI-6g-0QE"/>
@@ -30,39 +30,114 @@
                                     <outletCollection property="gestureRecognizers" destination="5KY-Mn-dmP" appends="YES" id="DDb-bb-w9Z"/>
                                 </connections>
                             </imageView>
-                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xnu-fV-WVj">
-                                <rect key="frame" x="380" y="380" width="200" height="200"/>
-                                <color key="backgroundColor" red="0.7019608021" green="0.7019608021" blue="0.7019608021" alpha="1" colorSpace="calibratedRGB"/>
-                                <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="1Kc-3R-EGK"/>
-                                    <constraint firstAttribute="width" constant="200" id="7Ff-pS-L5v"/>
-                                    <constraint firstAttribute="width" secondItem="Xnu-fV-WVj" secondAttribute="height" multiplier="1:1" id="nZr-b5-UNH"/>
-                                </constraints>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="Glx-IN-Ggp" appends="YES" id="JXS-nt-QKZ"/>
-                                </connections>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQH-Ct-4tW">
-                                <rect key="frame" x="20" y="550" width="46" height="30"/>
+                                <rect key="frame" x="20" y="562" width="46" height="30"/>
                                 <state key="normal" title="Export"/>
                                 <connections>
                                     <action selector="onExportButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hQj-AQ-C02"/>
                                 </connections>
                             </button>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xnu-fV-WVj">
+                                <rect key="frame" x="20" y="363" width="560" height="315"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Xnu-fV-WVj" secondAttribute="height" multiplier="16:9" id="Bid-U2-k9a">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="1"/>
+                                    </constraint>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Glx-IN-Ggp" appends="YES" id="JXS-nt-QKZ"/>
+                                </connections>
+                            </imageView>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qFe-TA-Q7I">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Alpha" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0g6-jP-xhm">
+                                        <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="44" id="b4e-zP-5iz"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="b4e-zP-5iz"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="b4e-zP-5iz"/>
+                                            </mask>
+                                        </variation>
+                                    </label>
+                                    <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Dw9-v5-SPU">
+                                        <rect key="frame" x="0.0" y="-15" width="118" height="31"/>
+                                        <accessibility key="accessibilityConfiguration" label="Overlay Image Alpha"/>
+                                        <connections>
+                                            <action selector="onAlphaSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="Ioe-Id-L5u"/>
+                                        </connections>
+                                    </slider>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Dw9-v5-SPU" firstAttribute="leading" secondItem="0g6-jP-xhm" secondAttribute="trailing" constant="8" id="6UQ-o5-npy"/>
+                                    <constraint firstItem="Dw9-v5-SPU" firstAttribute="top" secondItem="qFe-TA-Q7I" secondAttribute="top" id="Lxh-Hw-PHO">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="4"/>
+                                    </constraint>
+                                    <constraint firstItem="Dw9-v5-SPU" firstAttribute="leading" secondItem="0g6-jP-xhm" secondAttribute="trailing" constant="8" id="dzN-dU-mSl"/>
+                                    <constraint firstItem="0g6-jP-xhm" firstAttribute="top" secondItem="qFe-TA-Q7I" secondAttribute="top" constant="8" id="hJW-Tz-CnZ"/>
+                                    <constraint firstItem="0g6-jP-xhm" firstAttribute="leading" secondItem="qFe-TA-Q7I" secondAttribute="leading" constant="8" id="vKb-ly-7Mp"/>
+                                    <constraint firstAttribute="trailing" secondItem="Dw9-v5-SPU" secondAttribute="trailing" constant="8" id="zyq-TO-1rh"/>
+                                </constraints>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="0g6-jP-xhm"/>
+                                        <include reference="Dw9-v5-SPU"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="6UQ-o5-npy"/>
+                                        <include reference="Lxh-Hw-PHO"/>
+                                        <include reference="dzN-dU-mSl"/>
+                                        <include reference="zyq-TO-1rh"/>
+                                        <include reference="hJW-Tz-CnZ"/>
+                                        <include reference="vKb-ly-7Mp"/>
+                                    </mask>
+                                </variation>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qFe-TA-Q7I" secondAttribute="bottom" constant="46" id="0pQ-Uk-2Tw"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="6nT-eU-DjT"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Xnu-fV-WVj" secondAttribute="bottom" constant="20" id="7QK-9k-IPj"/>
+                            <constraint firstItem="qFe-TA-Q7I" firstAttribute="top" secondItem="Xnu-fV-WVj" secondAttribute="bottom" constant="8" id="ESb-2f-MvO"/>
                             <constraint firstItem="qQH-Ct-4tW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="GvH-WY-So8"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="J2W-Bm-Eme"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qQH-Ct-4tW" secondAttribute="bottom" constant="20" id="Pfg-1L-ogp"/>
-                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="Uvv-R9-BK7"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qQH-Ct-4tW" secondAttribute="bottom" constant="8" id="Pfg-1L-ogp"/>
+                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="top" secondItem="YF6-by-BuG" secondAttribute="bottom" constant="8" id="XfD-vs-Jtd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Xnu-fV-WVj" secondAttribute="trailing" id="ciy-a4-iLl">
+                                <variation key="heightClass=regular-widthClass=regular" constant="759"/>
+                            </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="qFe-TA-Q7I" secondAttribute="trailing" id="ecC-vy-I73"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="nK9-9i-Ryn"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="qFe-TA-Q7I" secondAttribute="leading" id="tKP-Nz-y34"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="Xnu-fV-WVj" secondAttribute="leading" id="yGd-bf-POH"/>
                         </constraints>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="qFe-TA-Q7I"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="ESb-2f-MvO"/>
+                                <include reference="ecC-vy-I73"/>
+                                <include reference="tKP-Nz-y34"/>
+                                <include reference="0pQ-Uk-2Tw"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
+                        <outlet property="alphaSliderView" destination="Dw9-v5-SPU" id="xpP-6U-l3I"/>
                         <outlet property="videoThumbnailImageView" destination="YF6-by-BuG" id="G5l-wi-sTG"/>
                         <outlet property="watermarkThumbnailImage" destination="Xnu-fV-WVj" id="Bqy-Dm-9jM"/>
                     </connections>
@@ -79,7 +154,68 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="301" y="389"/>
+            <point key="canvasLocation" x="300" y="388.5"/>
+        </scene>
+        <!--LoadingIndicatorView-->
+        <scene sceneID="FcQ-Tn-bYn">
+            <objects>
+                <viewController storyboardIdentifier="LoadingIndicatorView" title="LoadingIndicatorView" modalPresentationStyle="overCurrentContext" id="ZLR-19-tSp" customClass="ProgressViewController" customModule="wtrmrkr" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TQv-ch-zeE"/>
+                        <viewControllerLayoutGuide type="bottom" id="Wfq-Tm-tVv"/>
+                    </layoutGuides>
+                    <view key="view" autoresizesSubviews="NO" alpha="0.80000000000000004" contentMode="center" restorationIdentifier="LoadingIndicatorView" id="oqJ-so-b2L" userLabel="LoadingViewView">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <activityIndicatorView contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Z7L-vt-Ag2">
+                                <rect key="frame" x="282" y="281" width="37" height="37"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ff2-PY-Vr1">
+                                <rect key="frame" x="0.0" y="-2" width="150" height="2"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="fc5-5z-qRu"/>
+                                </constraints>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="fc5-5z-qRu"/>
+                                    </mask>
+                                </variation>
+                            </progressView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ff2-PY-Vr1" firstAttribute="centerX" secondItem="oqJ-so-b2L" secondAttribute="centerX" id="eir-7m-wWg"/>
+                            <constraint firstItem="ff2-PY-Vr1" firstAttribute="centerY" secondItem="oqJ-so-b2L" secondAttribute="centerY" id="iv5-xy-v08"/>
+                            <constraint firstItem="Z7L-vt-Ag2" firstAttribute="centerY" secondItem="oqJ-so-b2L" secondAttribute="centerY" id="kTV-UC-c86"/>
+                            <constraint firstItem="Z7L-vt-Ag2" firstAttribute="centerX" secondItem="oqJ-so-b2L" secondAttribute="centerX" id="xyF-mA-UaO"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="ff2-PY-Vr1"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="subviews">
+                                <include reference="ff2-PY-Vr1"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="eir-7m-wWg"/>
+                                <include reference="iv5-xy-v08"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="100" height="100"/>
+                    <connections>
+                        <outlet property="progressBarView" destination="ff2-PY-Vr1" id="B0Y-EQ-qdD"/>
+                        <outlet property="spinnerView" destination="Z7L-vt-Ag2" id="QS9-tz-v4V"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yaE-BN-AJA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1096" y="609"/>
         </scene>
     </scenes>
 </document>

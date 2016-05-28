@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2554738C1CF7B8B70078B7B2 /* ImageMaskingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */; };
+		2554738E1CF9456F0078B7B2 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */; };
 		256BAA701CF3975A0005079A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA6F1CF3975A0005079A /* AppDelegate.swift */; };
-		256BAA721CF3975A0005079A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA711CF3975A0005079A /* ViewController.swift */; };
+		256BAA721CF3975A0005079A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA711CF3975A0005079A /* MainViewController.swift */; };
 		256BAA751CF3975A0005079A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA731CF3975A0005079A /* Main.storyboard */; };
 		256BAA781CF3975A0005079A /* wtrmrkr.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA761CF3975A0005079A /* wtrmrkr.xcdatamodeld */; };
 		256BAA7A1CF3975A0005079A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA791CF3975A0005079A /* Assets.xcassets */; };
@@ -17,9 +19,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMaskingUtils.swift; sourceTree = "<group>"; };
+		2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
 		256BAA6C1CF3975A0005079A /* wtrmrkr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wtrmrkr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		256BAA6F1CF3975A0005079A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		256BAA711CF3975A0005079A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		256BAA711CF3975A0005079A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		256BAA741CF3975A0005079A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		256BAA771CF3975A0005079A /* wtrmrkr.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = wtrmrkr.xcdatamodel; sourceTree = "<group>"; };
 		256BAA791CF3975A0005079A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -69,8 +73,10 @@
 			isa = PBXGroup;
 			children = (
 				256BAA6F1CF3975A0005079A /* AppDelegate.swift */,
-				256BAA711CF3975A0005079A /* ViewController.swift */,
+				256BAA711CF3975A0005079A /* MainViewController.swift */,
+				2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */,
 				256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */,
+				2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -166,8 +172,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				256BAA881CF3A8A40005079A /* VideoMaskingUtils.swift in Sources */,
-				256BAA721CF3975A0005079A /* ViewController.swift in Sources */,
+				256BAA721CF3975A0005079A /* MainViewController.swift in Sources */,
 				256BAA781CF3975A0005079A /* wtrmrkr.xcdatamodeld in Sources */,
+				2554738E1CF9456F0078B7B2 /* ProgressViewController.swift in Sources */,
+				2554738C1CF7B8B70078B7B2 /* ImageMaskingUtils.swift in Sources */,
 				256BAA701CF3975A0005079A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,6 +328,7 @@
 				256BAA831CF3975A0005079A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
