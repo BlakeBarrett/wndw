@@ -69,16 +69,33 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     @IBAction func onScaleSliderValueChange(sender: UISlider) {
-        
-        let img = self.fullsizeWatermarkOriginalImage!
-        self.watermarkThumbnailImage.image = UIImage(CGImage: img.CGImage!, scale: img.scale * CGFloat(sender.value), orientation: img.imageOrientation)
+        // TODO: Figure out how to scale the image appropriately
     }
     
     @IBAction func onXSliderValueChange(sender: UISlider) {
+        guard let video = self.videoThumbnailImageView.image else { return }
+        guard let image = self.watermarkThumbnailImage.image else { return }
+        let value = CGFloat(sender.value)
         
+        let totalPossibleXRange = (video.size.width - image.size.width)
+        let newX = max((totalPossibleXRange * value), 0)
+        let frame = self.watermarkThumbnailImage.frame
+        
+        let newFrame = CGRectMake(newX, frame.origin.y, frame.width, frame.height)
+        self.watermarkThumbnailImage.frame = newFrame
     }
     
     @IBAction func onYSliderValueChange(sender: UISlider) {
+        guard let video = self.videoThumbnailImageView.image else { return }
+        guard let image = self.watermarkThumbnailImage.image else { return }
+        let value = CGFloat(sender.value)
+        
+        let totalPossibleYRange = (video.size.height - image.size.height)
+        let newY = max((totalPossibleYRange * value), 0)
+        let frame = self.watermarkThumbnailImage.frame
+        
+        let newFrame = CGRectMake(frame.origin.x, newY, frame.width, frame.height)
+        self.watermarkThumbnailImage.frame = newFrame
     }
     
     func aspectFit(image: UIImage, inRect rect: CGRect) {
@@ -100,7 +117,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let top = (videoSize!.height - height) / 2
 
         let centeredInVideoFrame = CGRectMake(left, top, width, height)
-        
         
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
