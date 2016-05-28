@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YF6-by-BuG">
+                            <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YF6-by-BuG" userLabel="Video Image">
                                 <rect key="frame" x="20" y="40" width="560" height="315"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -27,32 +27,45 @@
                                     <constraint firstAttribute="width" secondItem="YF6-by-BuG" secondAttribute="height" multiplier="16:9" id="4Pa-8c-ue0"/>
                                 </constraints>
                             </imageView>
-                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xnu-fV-WVj">
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xnu-fV-WVj" userLabel="Watermark Image">
                                 <rect key="frame" x="20" y="40" width="560" height="315"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Xnu-fV-WVj" secondAttribute="height" multiplier="16:9" id="yBo-db-iFA"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="5Ap-Lq-qdG" appends="YES" id="RHk-rS-0Xn"/>
+                                </connections>
                             </imageView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bnQ-xW-BTX">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="bnQ-xW-BTX">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="2OR-xB-UOL"/>
+                                </constraints>
                                 <items>
+                                    <barButtonItem systemItem="trash" id="KNk-8I-eaA">
+                                        <connections>
+                                            <action selector="onTrashButtonClick:" destination="BYZ-38-t0r" id="oMk-He-Xwh"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="OEH-TL-rou"/>
                                     <barButtonItem enabled="NO" systemItem="save" id="MHr-2k-aJ8">
                                         <connections>
                                             <action selector="onExportButtonClick:" destination="BYZ-38-t0r" id="aUL-hg-hrs"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem systemItem="flexibleSpace" id="OEH-TL-rou"/>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="M3o-1l-5W6"/>
                                     <barButtonItem style="plain" systemItem="camera" id="CVs-QB-IiV">
                                         <connections>
                                             <action selector="onOpenButtonClick:" destination="BYZ-38-t0r" id="LG2-5n-9bS"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
+                                <color key="tintColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </toolbar>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qFe-TA-Q7I">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qFe-TA-Q7I" userLabel="Controls View">
                                 <rect key="frame" x="20" y="363" width="560" height="185"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Alpha" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0g6-jP-xhm">
@@ -108,7 +121,7 @@
                                             <action selector="onAlphaSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="Ioe-Id-L5u"/>
                                         </connections>
                                     </slider>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
                                         <rect key="frame" x="60" y="38" width="494" height="31"/>
                                         <connections>
                                             <action selector="onScaleSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="ULH-GR-5fb"/>
@@ -162,27 +175,23 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="bnQ-xW-BTX" secondAttribute="bottom" id="49j-Eg-Uc7"/>
+                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="top" secondItem="YF6-by-BuG" secondAttribute="top" id="7ao-mO-NL1"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="AVJ-tV-Ohi"/>
                             <constraint firstItem="bnQ-xW-BTX" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="E9c-8z-wCq"/>
                             <constraint firstItem="qFe-TA-Q7I" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="HRw-Ef-i1v"/>
                             <constraint firstItem="Xnu-fV-WVj" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="fNc-j2-XFf"/>
                             <constraint firstItem="qFe-TA-Q7I" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="fl4-Zv-kZD"/>
-                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="jDc-Ot-YW2"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="mnY-Y0-Cu9"/>
                             <constraint firstItem="YF6-by-BuG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="oos-yN-FE2"/>
                             <constraint firstItem="qFe-TA-Q7I" firstAttribute="top" secondItem="Xnu-fV-WVj" secondAttribute="bottom" constant="8" id="r6u-Gd-KkH"/>
                             <constraint firstItem="bnQ-xW-BTX" firstAttribute="top" secondItem="qFe-TA-Q7I" secondAttribute="bottom" constant="8" id="rCk-Zq-dhH"/>
                             <constraint firstAttribute="trailing" secondItem="bnQ-xW-BTX" secondAttribute="trailing" id="t0X-nG-NsO"/>
+                            <constraint firstItem="Xnu-fV-WVj" firstAttribute="bottom" secondItem="YF6-by-BuG" secondAttribute="bottom" id="v9l-VJ-5QA"/>
                             <constraint firstItem="Xnu-fV-WVj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="yBE-mR-mHL"/>
                         </constraints>
-                        <variation key="heightClass=regular-widthClass=compact">
-                            <mask key="subviews">
-                                <include reference="qFe-TA-Q7I"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="alphaSliderView" destination="Dw9-v5-SPU" id="xpP-6U-l3I"/>
@@ -195,6 +204,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pinchGestureRecognizer id="5Ap-Lq-qdG"/>
             </objects>
             <point key="canvasLocation" x="300" y="388"/>
         </scene>

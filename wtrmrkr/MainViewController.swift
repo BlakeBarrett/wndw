@@ -55,6 +55,14 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.videoThumbnailImageView.image = thumbnail
     }
     
+    func startOver() {
+        self.moviePath = nil
+        self.fullsizeWatermarkOriginalImage = nil
+        self.videoThumbnailImageView.image = nil
+        self.watermarkThumbnailImage.image = nil
+        self.exportButtonView.enabled = false
+    }
+    
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
         self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
@@ -104,6 +112,28 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
             VideoMaskingUtils.overlay(video: video, withImage: img, andAlpha: self.overlayAlpha, atRect: centeredInVideoFrame)
         }
+    }
+    
+    @IBAction func onTrashButtonClick(sender: UIBarButtonItem) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let destroyAction = UIAlertAction(title: "Reset", style: .Destructive) { (action) in
+            self.startOver()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            // no-op
+        }
+        
+        alertController.addAction(destroyAction)
+        alertController.addAction(cancelAction)
+        
+        alertController.popoverPresentationController?.barButtonItem = sender
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
+        }
+
     }
     
     @IBAction func onOpenButtonClick(sender: AnyObject) {
