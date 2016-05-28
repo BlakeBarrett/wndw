@@ -14,11 +14,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBOutlet weak var watermarkThumbnailImage: UIImageView!
     @IBOutlet weak var videoThumbnailImageView: UIImageView!
     
+    // sliders
     @IBOutlet weak var alphaSliderView: UISlider!
+    @IBOutlet weak var scaleSliderView: UISlider!
+    @IBOutlet weak var xSliderView: UISlider!
+    @IBOutlet weak var ySliderView: UISlider!
     
+    @IBOutlet weak var exportButtonView: UIBarButtonItem!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.alphaSliderView.enabled = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,11 +38,13 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return UIInterfaceOrientationMask.Portrait
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
+//    override func prefersStatusBarHidden() -> Bool {
+//        return true
+//    }
     
+    var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
+        fullsizeWatermarkOriginalImage = image
         self.watermarkThumbnailImage.image = image
     }
     
@@ -49,24 +55,31 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.videoThumbnailImageView.image = thumbnail
     }
     
-    @IBAction func onVideoThumbnailTap(sender: UITapGestureRecognizer) {
-        self.browseForMediaType([kUTTypeMovie as String])
-    }
-    
-    @IBAction func onWatermarkThumbnailTap(sender: UITapGestureRecognizer) {
-        self.browseForMediaType([kUTTypeImage as String])
-        self.alphaSliderView.enabled = true
-    }
-    
-    
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
         self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
     }
     
+    @IBAction func onScaleSliderValueChange(sender: UISlider) {
+        
+        let img = self.fullsizeWatermarkOriginalImage!
+        self.watermarkThumbnailImage.image = UIImage(CGImage: img.CGImage!, scale: img.scale * CGFloat(sender.value), orientation: img.imageOrientation)
+    }
+    
+    @IBAction func onXSliderValueChange(sender: UISlider) {
+        
+    }
+    
+    @IBAction func onYSliderValueChange(sender: UISlider) {
+    }
+    
+    func aspectFit(image: UIImage, inRect rect: CGRect) {
+        
+    }
+    
     var overlayAlpha = Float(1.0)
-    @IBAction func onExportButtonClick(sender: UIButton) {
-        guard let image = self.watermarkThumbnailImage.image else { return }
+    @IBAction func onExportButtonClick(sender: AnyObject) {
+        guard let image = self.fullsizeWatermarkOriginalImage else { return }
         guard let path = self.moviePath else { return }
         let video = VideoMaskingUtils.getAVAssetAt(path)
         
@@ -90,6 +103,32 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.showSpinner()
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
             VideoMaskingUtils.overlay(video: video, withImage: img, andAlpha: self.overlayAlpha, atRect: centeredInVideoFrame)
+        }
+    }
+    
+    @IBAction func onOpenButtonClick(sender: AnyObject) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let movieAction = UIAlertAction(title: "Movie", style: .Default) { (action) in
+            self.browseForMediaType([kUTTypeMovie as String])
+        }
+        
+        let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
+            self.browseForMediaType([kUTTypeImage as String])
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            
+        }
+        
+        alertController.addAction(movieAction)
+        alertController.addAction(imageAction)
+        alertController.addAction(cancelAction)
+        
+        alertController.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
         }
     }
     
@@ -117,9 +156,13 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         }
         
+        self.exportButtonView.enabled = (self.watermarkThumbnailImage?.image != nil &&
+            self.videoThumbnailImageView?.image != nil)
+        
         picker.dismissViewControllerAnimated(true) { () -> Void in
             // background thread
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                
             }
         }
     }
