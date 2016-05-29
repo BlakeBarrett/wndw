@@ -43,21 +43,24 @@ class VideoMaskingUtils {
         //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
         
         guard let videoAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
-        guard let secondVideoAssetTrack = secondVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
+        guard let videoAssetTrackTwo = secondVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
         
         guard let audioAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeAudio).first else { return }
+        guard let audioAssetTrackTwo = secondVideo.tracksWithMediaType(AVMediaTypeAudio).first else { return }
+        
+        let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, min(sourceVideo.duration, secondVideo.duration))
         
         let mutableCompositon = AVMutableComposition()
         let mutableVideoCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
         let mutableVideoCompositionTrackTwo = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
-        
         let mutableAudioCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let mutableAudioCompositionTrackTwo = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
-        let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, min(sourceVideo.duration, secondVideo.duration))
         do {
             try mutableVideoCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrack, atTime: kCMTimeZero)
-            try mutableVideoCompositionTrackTwo.insertTimeRange(sourceVideoDuration, ofTrack: secondVideoAssetTrack, atTime: kCMTimeZero)
+            try mutableVideoCompositionTrackTwo.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrackTwo, atTime: kCMTimeZero)
             try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+            try mutableAudioCompositionTrackTwo.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrackTwo, atTime: kCMTimeZero)
         } catch (let error) {
             print(error)
         }
@@ -67,31 +70,72 @@ class VideoMaskingUtils {
         
         let videoFrameRect = CGRect(x: 0, y: 0, width: width, height: height)
         
+        let watermarkLayer = CALayer()
+        watermarkLayer.contents = videoAssetTrackTwo
+        watermarkLayer.frame = videoFrameRect
+        watermarkLayer.opacity = alpha
         
-        let firstVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
-        // Set the time range of the first instruction to span the duration of the first video track.
-        firstVideoCompositionInstruction.timeRange = sourceVideoDuration
+        let parentLayer: CALayer = CALayer()
+        parentLayer.frame = videoFrameRect
         
-        let secondVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
-        secondVideoCompositionInstruction.timeRange = sourceVideoDuration
+        let videoLayer: CALayer = CALayer()
+        videoLayer.frame = videoFrameRect
         
-        let firstVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrack)
-        firstVideoLayerInstruction.setTransform(videoAssetTrack.preferredTransform, atTime: kCMTimeZero)
-        
-        let secondVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrackTwo)
-        secondVideoLayerInstruction.setTransform(secondVideoAssetTrack.preferredTransform, atTime: kCMTimeZero)
+        parentLayer.addSublayer(videoLayer)
+        parentLayer.addSublayer(watermarkLayer)
         
         
-        firstVideoCompositionInstruction.layerInstructions = [firstVideoLayerInstruction]
-        secondVideoCompositionInstruction.layerInstructions = [secondVideoLayerInstruction]
         
-        let mutableVideoComposition = AVMutableVideoComposition(propertiesOfAsset: sourceVideo)
-        mutableVideoComposition.instructions = [firstVideoCompositionInstruction, secondVideoCompositionInstruction]
-        mutableVideoComposition.renderSize = videoFrameRect.size
+        
+        
+        
+        
+        
+        
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrack)
+        layerInstruction.setTransform(mutableVideoCompositionTrack.preferredTransform, atTime: kCMTimeZero)
+        layerInstruction.setOpacity(0.0, atTime: sourceVideoDuration.duration)
+        
+        let layerInstructionTwo = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrackTwo)
+        layerInstructionTwo.setTransform(mutableVideoCompositionTrackTwo.preferredTransform, atTime: kCMTimeZero)
+        layerInstructionTwo.setOpacity(0.0, atTime: sourceVideoDuration.duration)
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = sourceVideoDuration
+        instruction.layerInstructions = [layerInstruction, layerInstructionTwo]
+        
+        let videoComposition = AVMutableVideoComposition() //AVMutableVideoComposition(propertiesOfAsset: sourceVideo)
+        videoComposition.renderScale = 1.0
+        videoComposition.renderSize = videoFrameRect.size
+        videoComposition.frameDuration = videoAssetTrack.minFrameDuration
+        videoComposition.instructions = [instruction]
+        videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, inLayer: parentLayer)
+        
+        
+//        let firstVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+//        // Set the time range of the first instruction to span the duration of the first video track.
+//        firstVideoCompositionInstruction.timeRange = sourceVideoDuration
+//        
+//        let secondVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+//        secondVideoCompositionInstruction.timeRange = sourceVideoDuration
+//        
+//        let firstVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrack)
+//        firstVideoLayerInstruction.setTransform(videoAssetTrack.preferredTransform, atTime: kCMTimeZero)
+//        
+//        let secondVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrackTwo)
+//        secondVideoLayerInstruction.setTransform(secondVideoAssetTrack.preferredTransform, atTime: kCMTimeZero)
+//        
+//        
+//        firstVideoCompositionInstruction.layerInstructions = [firstVideoLayerInstruction]
+//        secondVideoCompositionInstruction.layerInstructions = [secondVideoLayerInstruction]
+//        
+//        let videoComposition = AVMutableVideoComposition(propertiesOfAsset: sourceVideo)
+//        videoComposition.instructions = [firstVideoCompositionInstruction, secondVideoCompositionInstruction]
+//        videoComposition.renderSize = videoFrameRect.size
         
         let outputUrl = VideoMaskingUtils.getPathForTempFileNamed("output.mov")
         
-        VideoMaskingUtils.exportCompositedVideo(mutableCompositon, toURL: outputUrl, withVideoComposition: mutableVideoComposition)
+        VideoMaskingUtils.exportCompositedVideo(mutableCompositon, toURL: outputUrl, withVideoComposition: videoComposition)
         
         VideoMaskingUtils.removeTempFileAtPath(outputUrl.absoluteString)
     }
@@ -140,8 +184,6 @@ class VideoMaskingUtils {
         parentLayer.addSublayer(videoLayer)
         parentLayer.addSublayer(watermarkLayer)
         
-        
-        
         let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrack)
         layerInstruction.setTransform(mutableVideoCompositionTrack.preferredTransform, atTime: kCMTimeZero)
         layerInstruction.setOpacity(0.0, atTime: sourceVideoDuration.duration)
@@ -156,7 +198,6 @@ class VideoMaskingUtils {
         videoComposition.frameDuration = videoAssetTrack.minFrameDuration
         videoComposition.instructions = [instruction]
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, inLayer: parentLayer)
-        
         
         
         let outputUrl = VideoMaskingUtils.getPathForTempFileNamed("output.mov")
