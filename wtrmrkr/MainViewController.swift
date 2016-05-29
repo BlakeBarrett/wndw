@@ -63,6 +63,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     func startOver() {
         self.moviePath = nil
+        self.secondMoviePath = nil
         self.fullsizeWatermarkOriginalImage = nil
         self.videoThumbnailImageView.image = nil
         self.watermarkThumbnailImage.image = nil
@@ -140,7 +141,13 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 VideoMaskingUtils.overlay(video: video, withSecondVideo: secondVideo, andAlpha: self.overlayAlpha)
             }
         } else {
-            guard let image = self.fullsizeWatermarkOriginalImage else { return }
+            var image: UIImage
+            if self.fullsizeWatermarkOriginalImage != nil {
+                image = self.fullsizeWatermarkOriginalImage!
+            } else {
+                image = self.watermarkThumbnailImage.image!
+            }
+            
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                 let deets = self.center(image, inVideoFrame: videoSize!)
                 VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
