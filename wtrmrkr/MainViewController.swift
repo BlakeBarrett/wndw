@@ -49,10 +49,16 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     var moviePath: NSURL? = nil
+    var secondMoviePath: NSURL? = nil
     func onVideoSelected(path: NSURL) {
-        self.moviePath = path
         let thumbnail = VideoMaskingUtils.thumbnailImageForVideo(path)
-        self.videoThumbnailImageView.image = thumbnail
+        if self.moviePath == nil {
+            self.moviePath = path
+            self.videoThumbnailImageView.image = thumbnail
+        } else {
+            self.secondMoviePath = path
+            self.watermarkThumbnailImage.image = thumbnail
+        }
     }
     
     func startOver() {
@@ -109,26 +115,14 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.watermarkThumbnailImage.frame = newFrame
     }
     
-    func aspectFit(image: UIImage, inRect rect: CGRect) {
-        
-    }
-    
     var overlayAlpha = Float(1.0)
     @IBAction func onExportButtonClick(sender: AnyObject) {
-        guard let image = self.fullsizeWatermarkOriginalImage else { return }
+        
         guard let path = self.moviePath else { return }
+        
         let video = VideoMaskingUtils.getAVAssetAt(path)
-        
         let videoSize = self.videoThumbnailImageView.image?.size
-        let img = ImageMaskingUtils.fit(image, inSize: videoSize!)
 
-        let width = img.size.width
-        let height = img.size.height
-        let left = (videoSize!.width - width) / 2
-        let top = (videoSize!.height - height) / 2
-
-        let centeredInVideoFrame = CGRectMake(left, top, width, height)
-        
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
             if let error = message.object {
@@ -136,9 +130,36 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         }
         self.showSpinner()
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-            VideoMaskingUtils.overlay(video: video, withImage: img, andAlpha: self.overlayAlpha, atRect: centeredInVideoFrame)
+        
+        let twoVideosOneCup = self.moviePath != nil && self.secondMoviePath != nil
+        if twoVideosOneCup {
+            
+            guard let path2 = self.secondMoviePath else { return }
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                let secondVideo = VideoMaskingUtils.getAVAssetAt(path2)
+                VideoMaskingUtils.overlay(video: video, withSecondVideo: secondVideo, andAlpha: self.overlayAlpha)
+            }
+        } else {
+            guard let image = self.fullsizeWatermarkOriginalImage else { return }
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                let deets = self.center(image, inVideoFrame: videoSize!)
+                VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
+            }
         }
+        
+    }
+    
+    func center(image: UIImage, inVideoFrame videoSize: CGSize) -> (image: UIImage, rect: CGRect) {
+        let img = ImageMaskingUtils.fit(image, inSize: videoSize)
+        
+        let width = img.size.width
+        let height = img.size.height
+        let left = (videoSize.width - width) / 2
+        let top = (videoSize.height - height) / 2
+        
+        let centeredInVideoFrame = CGRectMake(left, top, width, height)
+        
+        return (image: img, rect: centeredInVideoFrame)
     }
     
     @IBAction func onTrashButtonClick(sender: UIBarButtonItem) {
@@ -171,7 +192,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
         
         let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
-            self.browseForMediaType([kUTTypeImage as String])
+            self.browseForMediaType([kUTTypeImage as String, kUTTypeMovie as String])
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in

@@ -38,6 +38,65 @@ class VideoMaskingUtils {
         return AVURLAsset(URL: url, options: nil)
     }
     
+    class func overlay(video sourceVideo: AVURLAsset, withSecondVideo secondVideo: AVURLAsset, andAlpha alpha: Float) {
+        // Most of this code was translated into Swift 2.2 from this example here:
+        //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
+        
+        guard let videoAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
+        guard let secondVideoAssetTrack = secondVideo.tracksWithMediaType(AVMediaTypeVideo).first else { return }
+        
+        guard let audioAssetTrack = sourceVideo.tracksWithMediaType(AVMediaTypeAudio).first else { return }
+        
+        let mutableCompositon = AVMutableComposition()
+        let mutableVideoCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        let mutableVideoCompositionTrackTwo = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        
+        let mutableAudioCompositionTrack = mutableCompositon.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        
+        let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, min(sourceVideo.duration, secondVideo.duration))
+        do {
+            try mutableVideoCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrack, atTime: kCMTimeZero)
+            try mutableVideoCompositionTrackTwo.insertTimeRange(sourceVideoDuration, ofTrack: secondVideoAssetTrack, atTime: kCMTimeZero)
+            try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+        } catch (let error) {
+            print(error)
+        }
+        
+        let width = videoAssetTrack.naturalSize.width
+        let height = videoAssetTrack.naturalSize.height
+        
+        let videoFrameRect = CGRect(x: 0, y: 0, width: width, height: height)
+        
+        
+        let firstVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+        // Set the time range of the first instruction to span the duration of the first video track.
+        firstVideoCompositionInstruction.timeRange = sourceVideoDuration
+        
+        let secondVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+        secondVideoCompositionInstruction.timeRange = sourceVideoDuration
+        
+        let firstVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrack)
+        firstVideoLayerInstruction.setTransform(videoAssetTrack.preferredTransform, atTime: kCMTimeZero)
+        
+        let secondVideoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack:mutableVideoCompositionTrackTwo)
+        secondVideoLayerInstruction.setTransform(secondVideoAssetTrack.preferredTransform, atTime: kCMTimeZero)
+        
+        
+        firstVideoCompositionInstruction.layerInstructions = [firstVideoLayerInstruction]
+        secondVideoCompositionInstruction.layerInstructions = [secondVideoLayerInstruction]
+        
+        let mutableVideoComposition = AVMutableVideoComposition(propertiesOfAsset: sourceVideo)
+        mutableVideoComposition.instructions = [firstVideoCompositionInstruction, secondVideoCompositionInstruction]
+        mutableVideoComposition.renderSize = videoFrameRect.size
+        
+        let outputUrl = VideoMaskingUtils.getPathForTempFileNamed("output.mov")
+        
+        VideoMaskingUtils.exportCompositedVideo(mutableCompositon, toURL: outputUrl, withVideoComposition: mutableVideoComposition)
+        
+        VideoMaskingUtils.removeTempFileAtPath(outputUrl.absoluteString)
+    }
+    
+    
     class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?) {
         // Most of this code was translated into Swift 2.2 from this example here:
         //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
