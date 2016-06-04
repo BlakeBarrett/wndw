@@ -44,8 +44,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
-        fullsizeWatermarkOriginalImage = image
-        self.watermarkThumbnailImage.image = image
+        fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
+        self.watermarkThumbnailImage.image = fullsizeWatermarkOriginalImage
     }
     
     var moviePath: NSURL? = nil
@@ -72,49 +72,18 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
-        self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
+//        self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
+        self.brush.alpha = CGFloat(sender.value)
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.alpha = self.brush.alpha
     }
     
     @IBAction func onScaleSliderValueChange(sender: UISlider) {
         let value = CGFloat(sender.value)
-        
-        let xScale = ((self.fullsizeWatermarkOriginalImage?.size.width)! / (self.videoThumbnailImageView.image?.size.width)!) / value
-        let yScale = ((self.fullsizeWatermarkOriginalImage?.size.height)! / (self.videoThumbnailImageView.image?.size.height)!) / value
-        
-        let frame = self.watermarkThumbnailImage.frame
-        let width = max((frame.width * xScale), 0.1)
-        let height = max((frame.height * yScale), 0.1)
-        let newFrame = CGRectMake(frame.origin.x, frame.origin.y, width, height)
-        
-        self.watermarkThumbnailImage.contentMode = UIViewContentMode.ScaleAspectFit
-        self.watermarkThumbnailImage.image = ImageMaskingUtils.crop(self.fullsizeWatermarkOriginalImage!, inRect: newFrame)
+        self.brush.width = value
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.width = self.brush.width
     }
     
-    @IBAction func onXSliderValueChange(sender: UISlider) {
-        guard let video = self.videoThumbnailImageView.image else { return }
-        guard let image = self.watermarkThumbnailImage.image else { return }
-        let value = CGFloat(sender.value)
-        
-        let totalPossibleXRange = (video.size.width - image.size.width)
-        let newX = max((totalPossibleXRange * value), 0)
-        let frame = self.watermarkThumbnailImage.frame
-        
-        let newFrame = CGRectMake(newX, frame.origin.y, frame.width, frame.height)
-        self.watermarkThumbnailImage.frame = newFrame
-    }
-    
-    @IBAction func onYSliderValueChange(sender: UISlider) {
-        guard let video = self.videoThumbnailImageView.image else { return }
-        guard let image = self.watermarkThumbnailImage.image else { return }
-        let value = CGFloat(sender.value)
-        
-        let totalPossibleYRange = (video.size.height - image.size.height)
-        let newY = max((totalPossibleYRange * value), 0)
-        let frame = self.watermarkThumbnailImage.frame
-        
-        let newFrame = CGRectMake(frame.origin.x, newY, frame.width, frame.height)
-        self.watermarkThumbnailImage.frame = newFrame
-    }
+    var brush = Brush()
     
     var overlayAlpha = Float(1.0)
     @IBAction func onExportButtonClick(sender: AnyObject) {
@@ -141,12 +110,12 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 VideoMaskingUtils.overlay(video: video, withSecondVideo: secondVideo, andAlpha: self.overlayAlpha)
             }
         } else {
-            var image: UIImage
-            if self.fullsizeWatermarkOriginalImage != nil {
-                image = self.fullsizeWatermarkOriginalImage!
-            } else {
-                image = self.watermarkThumbnailImage.image!
-            }
+            let image: UIImage = self.watermarkThumbnailImage.image!
+//            if self.fullsizeWatermarkOriginalImage != nil {
+//                image = self.fullsizeWatermarkOriginalImage!
+//            } else {
+//                image = self.watermarkThumbnailImage.image!
+//            }
             
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                 let deets = self.center(image, inVideoFrame: videoSize!)
