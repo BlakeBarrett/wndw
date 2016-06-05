@@ -27,7 +27,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     override func shouldAutorotate() -> Bool {
@@ -38,14 +37,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return UIInterfaceOrientationMask.Portrait
     }
     
-//    override func prefersStatusBarHidden() -> Bool {
-//        return true
-//    }
-    
     var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
-        fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
-        self.watermarkThumbnailImage.image = fullsizeWatermarkOriginalImage
+        self.fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
+//        self.watermarkThumbnailImage.image = fullsizeWatermarkOriginalImage
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(self.fullsizeWatermarkOriginalImage!)
     }
     
     var moviePath: NSURL? = nil
@@ -58,6 +54,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         } else {
             self.secondMoviePath = path
             self.watermarkThumbnailImage.image = thumbnail
+            (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(ImageMaskingUtils.reconcileImageOrientation(thumbnail!))
         }
     }
     
@@ -118,24 +115,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 //            }
             
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let deets = self.center(image, inVideoFrame: videoSize!)
+                let deets = ImageMaskingUtils.center(image, inFrame: videoSize!)
                 VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
             }
         }
         
-    }
-    
-    func center(image: UIImage, inVideoFrame videoSize: CGSize) -> (image: UIImage, rect: CGRect) {
-        let img = ImageMaskingUtils.fit(image, inSize: videoSize)
-        
-        let width = img.size.width
-        let height = img.size.height
-        let left = (videoSize.width - width) / 2
-        let top = (videoSize.height - height) / 2
-        
-        let centeredInVideoFrame = CGRectMake(left, top, width, height)
-        
-        return (image: img, rect: centeredInVideoFrame)
     }
     
     @IBAction func onTrashButtonClick(sender: UIBarButtonItem) {

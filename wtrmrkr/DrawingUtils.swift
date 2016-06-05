@@ -30,8 +30,7 @@ class DrawingUtils {
         swiped = true
         if let touch = touches.first {
             let currentPoint = touch.locationInView(self.mainImageView)
-            DrawingUtils.drawLineFrom(lastPoint, toPoint: currentPoint, inImageView: self.tempImageView, withBrush: self.brush)
-            
+            self.tempImageView.image = DrawingUtils.drawLineFrom(lastPoint, toPoint: currentPoint, onImage: self.tempImageView.image!, inFrame: self.rect, withBrush: self.brush)
             lastPoint = currentPoint
         }
     }
@@ -39,7 +38,7 @@ class DrawingUtils {
     func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !swiped {
             // draw a single point
-            DrawingUtils.drawLineFrom(lastPoint, toPoint: lastPoint, inImageView: self.tempImageView, withBrush: self.brush)
+            self.tempImageView.image = DrawingUtils.drawLineFrom(lastPoint, toPoint: lastPoint, onImage: self.tempImageView.image!, inFrame: self.rect, withBrush: self.brush)
         }
         
         self.mainImageView.image = ImageMaskingUtils.mergeImages(self.mainImageView.image!,
@@ -53,19 +52,17 @@ class DrawingUtils {
         self.brush = brush
     }
 
+    var rect: CGRect = CGRectMake(0, 0, 1920, 1080)
     
     
+    class func drawLineFrom(fromPoint: CGPoint, toPoint: CGPoint, onImage: UIImage, inFrame rect:CGRect, withBrush: Brush) -> UIImage {
     
-    class func drawLineFrom(fromPoint: CGPoint, toPoint: CGPoint, inImageView: UIImageView, withBrush: Brush) {
-        
         let brush = withBrush
-        
-        let size = inImageView.frame.size
+        let size = rect.size
         
         UIGraphicsBeginImageContext(size)
         let context = UIGraphicsGetCurrentContext()
-//        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        inImageView.image?.drawInRect(inImageView.frame)
+        onImage.drawInRect(rect)
         
         CGContextMoveToPoint(context, fromPoint.x, fromPoint.y)
         CGContextAddLineToPoint(context, toPoint.x, toPoint.y)
@@ -77,8 +74,9 @@ class DrawingUtils {
         
         CGContextStrokePath(context)
         
-        inImageView.image = UIGraphicsGetImageFromCurrentImageContext()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        return image
     }
     
 }
