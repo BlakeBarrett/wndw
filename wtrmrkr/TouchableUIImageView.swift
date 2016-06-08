@@ -12,6 +12,13 @@ class TouchableUIImageView: UIImageView {
   
     var touchesEnabled = true
     
+    override var image: UIImage? {
+        didSet {
+            let rect = ImageMaskingUtils.center(self.image!, inFrame: self.frame).rect
+            self.rect = rect
+        }
+    }
+    
     override func layoutSubviews() {
         self.mask.frame = self.frame
         self.temp.frame = self.frame
@@ -26,11 +33,11 @@ class TouchableUIImageView: UIImageView {
         self.image = image
         self.original = image
         
-        self.rect = ImageMaskingUtils.center(image, inFrame: self.frame.size).rect
+        self.rect = ImageMaskingUtils.center(image, inFrame: self.frame).rect
     }
     
     // MARK: - Line Drawing Code
-    var brush: Brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 10.0, alpha: 0.9)
+    var brush: Brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 10.0, alpha: 1.0)
     func setBrush(brush: Brush) {
         self.brush = brush
     }

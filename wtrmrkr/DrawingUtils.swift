@@ -13,47 +13,8 @@ import MobileCoreServices
 
 class DrawingUtils {
     
-    var mainImageView = UIImageView()
-    var tempImageView = UIImageView()
-    
-    var lastPoint = CGPointMake(0, 0)
-    var swiped = false
-    
-    func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        swiped = false
-        if let touch = touches.first {
-            lastPoint = touch.locationInView(self.mainImageView)
-        }
-    }
-    
-    func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        swiped = true
-        if let touch = touches.first {
-            let currentPoint = touch.locationInView(self.mainImageView)
-            self.tempImageView.image = DrawingUtils.drawLineFrom(lastPoint, toPoint: currentPoint, onImage: self.tempImageView.image!, inFrame: self.rect, withBrush: self.brush)
-            lastPoint = currentPoint
-        }
-    }
-    
-    func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !swiped {
-            // draw a single point
-            self.tempImageView.image = DrawingUtils.drawLineFrom(lastPoint, toPoint: lastPoint, onImage: self.tempImageView.image!, inFrame: self.rect, withBrush: self.brush)
-        }
-        
-        self.mainImageView.image = ImageMaskingUtils.mergeImages(self.mainImageView.image!,
-                                                                 second: self.tempImageView.image!)
-        self.tempImageView.image = nil
-    }
-    
-    // MARK: - Line Drawing Code
-    var brush: Brush = Brush()
-    func setBrush(brush: Brush) {
-        self.brush = brush
-    }
-
-    var rect: CGRect = CGRectMake(0, 0, 1920, 1080)
-    
+    // For an example of when/how to call this, check <#TouchableUIImageView.swift>
+    // or check out mrkr
     
     class func drawLineFrom(fromPoint: CGPoint, toPoint: CGPoint, onImage: UIImage, inFrame rect:CGRect, withBrush: Brush) -> UIImage {
     

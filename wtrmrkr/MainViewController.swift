@@ -88,7 +88,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         guard let path = self.moviePath else { return }
         
         let video = VideoMaskingUtils.getAVAssetAt(path)
-        let videoSize = self.videoThumbnailImageView.image?.size
+        let videoSize = self.videoThumbnailImageView.frame
 
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
@@ -115,7 +115,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 //            }
             
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let deets = ImageMaskingUtils.center(image, inFrame: videoSize!)
+                let deets = ImageMaskingUtils.center(image, inFrame: videoSize)
                 VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
             }
         }

@@ -188,7 +188,9 @@ class ImageMaskingUtils {
         return image
     }
     
-    class func center(image: UIImage, inFrame size: CGSize) -> (image: UIImage, rect: CGRect) {
+    class func center(image: UIImage, inFrame rect: CGRect) -> (image: UIImage, rect: CGRect) {
+        
+        let size = rect.size
         let img = ImageMaskingUtils.fit(image, inSize: size)
         
         let width = img.size.width
