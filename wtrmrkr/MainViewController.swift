@@ -40,7 +40,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
         self.fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
-//        self.watermarkThumbnailImage.image = fullsizeWatermarkOriginalImage
         (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(self.fullsizeWatermarkOriginalImage!)
     }
     
@@ -69,7 +68,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
-//        self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
+        self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
         self.brush.alpha = CGFloat(sender.value)
         (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.alpha = self.brush.alpha
     }
@@ -108,12 +107,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         } else {
             let image: UIImage = self.watermarkThumbnailImage.image!
-//            if self.fullsizeWatermarkOriginalImage != nil {
-//                image = self.fullsizeWatermarkOriginalImage!
-//            } else {
-//                image = self.watermarkThumbnailImage.image!
-//            }
-            
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                 let deets = ImageMaskingUtils.center(image, inFrame: videoSize)
                 VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
@@ -175,6 +168,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         picker.delegate = self
         picker.sourceType = .PhotoLibrary
         picker.mediaTypes = mediaTypes
+        picker.allowsEditing = true
         self.presentViewController(picker, animated: true) { () -> Void in
             // no-op
         }
