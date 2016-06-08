@@ -91,27 +91,27 @@ class VideoMaskingUtils {
 
         let firstApproach = false
         if firstApproach {
-            let mainInstruction = AVMutableVideoCompositionInstruction()
-            mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
-            mainInstruction.backgroundColor = UIColor.redColor().CGColor
-            
-            let firstlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstTrack)
-            firstlayerInstruction.setTransform(firstAsset.preferredTransform, atTime: kCMTimeZero)
-            
-            let secondInstruction = AVMutableVideoCompositionInstruction()
-            secondInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
-            let backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: alpha)
-            secondInstruction.backgroundColor = backgroundColor.CGColor
-            
-            let secondlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: secondTrack)
-            secondlayerInstruction.setTransform(secondAsset.preferredTransform, atTime: kCMTimeZero)
-            
-            secondInstruction.layerInstructions = [secondlayerInstruction]
-            
-            mainInstruction.layerInstructions = [firstlayerInstruction]//, secondlayerInstruction]
-            
-            videoComposition.instructions = [mainInstruction, secondInstruction]
-
+//            let mainInstruction = AVMutableVideoCompositionInstruction()
+//            mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
+//            mainInstruction.backgroundColor = UIColor.redColor().CGColor
+//            
+//            let firstlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstTrack)
+//            firstlayerInstruction.setTransform(firstAsset.preferredTransform, atTime: kCMTimeZero)
+//            
+//            let secondInstruction = AVMutableVideoCompositionInstruction()
+//            secondInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
+//            let backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: alpha)
+//            secondInstruction.backgroundColor = backgroundColor.CGColor
+//            
+//            let secondlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: secondTrack)
+//            secondlayerInstruction.setTransform(secondAsset.preferredTransform, atTime: kCMTimeZero)
+//            
+//            secondInstruction.layerInstructions = [secondlayerInstruction]
+//            
+//            mainInstruction.layerInstructions = [firstlayerInstruction]//, secondlayerInstruction]
+//            
+//            videoComposition.instructions = [mainInstruction, secondInstruction]
+//
         } else {
             let firstLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstMediaTrack)
             firstLayerInstruction.setTransform(firstMediaTrack.preferredTransform, atTime: kCMTimeZero)
