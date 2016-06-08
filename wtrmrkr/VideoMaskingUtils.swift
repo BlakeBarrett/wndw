@@ -18,23 +18,20 @@ class VideoMaskingUtils {
     class func thumbnailsFor(asset: AVAsset, howMany count: Int) -> [UIImage] {
         var images = [UIImage]()
         
-        let totalSeconds = asset.duration.seconds
-        let sliceDuation = (totalSeconds / Double(count))
-        var currentTime = 0.0
+        let totalDuration = asset.duration.seconds
+        let sliceDuation = (totalDuration / Double(count))
         
-        while (currentTime < asset.duration.seconds) {
-            let duration = Int64(asset.duration.seconds)
-            let timeScale = asset.duration.timescale
-            let time = CMTimeMake(duration, timeScale)
+        for i in 1...count {
+            let timescale = asset.duration.timescale
+            let value = floor(sliceDuation * Double(i) * Double(timescale))
+            var time = CMTimeMake(1, timescale)
+            time.value = CMTimeValue(value)
             guard let image = VideoMaskingUtils.getFrameFrom(asset, atTime: time) else { continue }
             images.append(image)
-            
-            currentTime += sliceDuation
         }
-        
         return images
     }
-
+    
     // Lifted straight up from here: http://stackoverflow.com/questions/7501413/create-thumbnail-from-a-video-url-in-iphone-sdk
     class func thumbnailImageForVideo(url:NSURL) -> UIImage? {
         let asset = AVAsset(URL: url)

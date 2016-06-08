@@ -34,11 +34,9 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
-        if let tableView = self.tableView {
-            tableView.delegate = self
-            tableView.dataSource = self
-            tableView.reloadData()
-        }
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.reloadData()
     }
     
     // nobody else need see these
@@ -52,12 +50,16 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
         self.items = VideoMaskingUtils.thumbnailsFor(asset, howMany: 20)
     }
     
-    // MARK: IBAction for "Save" button click.
-    
-    @IBAction func saveButtonClicked(sender: UIBarButtonItem) {
+    func onFrameSelected() {
         guard let image = self.selectedImage else { return }
         delegate?.onFrameSelected(image)
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: IBAction for "Save" button click.
+    
+    @IBAction func saveButtonClicked(sender: UIBarButtonItem) {
+        self.onFrameSelected()
     }
     
     // MARK: TableView stuff
@@ -83,6 +85,7 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.selectedImage = items[indexPath.row]
+        self.onFrameSelected()
     }
     
 }

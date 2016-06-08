@@ -202,8 +202,10 @@
                                             <subviews>
                                                 <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0le-U9-B0Y">
                                                     <rect key="frame" x="150" y="0.0" width="300" height="168"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </imageView>
                                             </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstItem="0le-U9-B0Y" firstAttribute="leading" secondItem="Cto-fC-5bg" secondAttribute="leading" id="D2C-4B-xWf"/>
                                                 <constraint firstItem="0le-U9-B0Y" firstAttribute="top" secondItem="Cto-fC-5bg" secondAttribute="top" id="Sgp-C0-qXi"/>
@@ -212,6 +214,7 @@
                                                 <constraint firstItem="0le-U9-B0Y" firstAttribute="centerX" secondItem="Cto-fC-5bg" secondAttribute="centerX" id="znj-3k-lrM"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="backgroundImageView" destination="0le-U9-B0Y" id="4qx-Xg-gax"/>
                                         </connections>

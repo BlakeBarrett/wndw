@@ -134,20 +134,20 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBAction func onOpenButtonClick(sender: AnyObject) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-        let movieAction = UIAlertAction(title: "Movie", style: .Default) { (action) in
+        let movieAction = UIAlertAction(title: "Video", style: .Default) { (action) in
             self.browseForMediaType([kUTTypeMovie as String])
         }
         
-        let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
-            self.browseForMediaType([kUTTypeImage as String, kUTTypeMovie as String])
-        }
+//        let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
+//            self.browseForMediaType([kUTTypeImage as String, kUTTypeMovie as String])
+//        }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
             
         }
         
         alertController.addAction(movieAction)
-        alertController.addAction(imageAction)
+//        alertController.addAction(imageAction)
         alertController.addAction(cancelAction)
         
         alertController.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
@@ -174,11 +174,12 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         var path: NSURL?
         
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
-        if (mediaType == kUTTypeImage) {
-            if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-                self.onWatermarkImageSelected(image)
-            }
-        } else if (mediaType == kUTTypeMovie) {
+//        if (mediaType == kUTTypeImage) {
+//            if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+//                self.onWatermarkImageSelected(image)
+//            }
+//        } else
+        if (mediaType == kUTTypeMovie) {
             if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
                 path = referenceUrl
                 self.onVideoSelected(path!)
