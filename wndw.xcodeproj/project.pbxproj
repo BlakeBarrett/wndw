@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2546DE761D07B397009393E1 /* VideoCellPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2546DE751D07B397009393E1 /* VideoCellPickerViewController.swift */; };
+		2546DE781D07BE93009393E1 /* VideoCellPickerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2546DE771D07BE93009393E1 /* VideoCellPickerViewCell.swift */; };
 		2554738C1CF7B8B70078B7B2 /* ImageMaskingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */; };
 		2554738E1CF9456F0078B7B2 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */; };
 		256BAA701CF3975A0005079A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA6F1CF3975A0005079A /* AppDelegate.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2546DE751D07B397009393E1 /* VideoCellPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCellPickerViewController.swift; sourceTree = "<group>"; };
+		2546DE771D07BE93009393E1 /* VideoCellPickerViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCellPickerViewCell.swift; sourceTree = "<group>"; };
 		2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMaskingUtils.swift; sourceTree = "<group>"; };
 		2554738D1CF9456F0078B7B2 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
 		256BAA6C1CF3975A0005079A /* wndw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wndw.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +91,7 @@
 				2554738B1CF7B8B70078B7B2 /* ImageMaskingUtils.swift */,
 				25788C281D02BA9B00942B6E /* DrawingUtils.swift */,
 				25788C2D1D02CF7800942B6E /* TouchableUIImageView.swift */,
+				2546DE751D07B397009393E1 /* VideoCellPickerViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -114,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				25788C2B1D02BDAA00942B6E /* Brush.swift */,
+				2546DE771D07BE93009393E1 /* VideoCellPickerViewCell.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -189,9 +195,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2546DE761D07B397009393E1 /* VideoCellPickerViewController.swift in Sources */,
 				256BAA881CF3A8A40005079A /* VideoMaskingUtils.swift in Sources */,
 				25788C291D02BA9B00942B6E /* DrawingUtils.swift in Sources */,
 				25788C2C1D02BDAA00942B6E /* Brush.swift in Sources */,
+				2546DE781D07BE93009393E1 /* VideoCellPickerViewCell.swift in Sources */,
 				256BAA721CF3975A0005079A /* MainViewController.swift in Sources */,
 				256BAA781CF3975A0005079A /* wtrmrkr.xcdatamodeld in Sources */,
 				2554738E1CF9456F0078B7B2 /* ProgressViewController.swift in Sources */,

@@ -14,22 +14,46 @@ import Foundation
 import UIKit
 
 class VideoMaskingUtils {
+    
+    class func thumbnailsFor(asset: AVAsset, howMany count: Int) -> [UIImage] {
+        var images = [UIImage]()
+        
+        let totalSeconds = asset.duration.seconds
+        let sliceDuation = (totalSeconds / Double(count))
+        var currentTime = 0.0
+        
+        while (currentTime < asset.duration.seconds) {
+            let duration = Int64(asset.duration.seconds)
+            let timeScale = asset.duration.timescale
+            let time = CMTimeMake(duration, timeScale)
+            guard let image = VideoMaskingUtils.getFrameFrom(asset, atTime: time) else { continue }
+            images.append(image)
+            
+            currentTime += sliceDuation
+        }
+        
+        return images
+    }
 
     // Lifted straight up from here: http://stackoverflow.com/questions/7501413/create-thumbnail-from-a-video-url-in-iphone-sdk
     class func thumbnailImageForVideo(url:NSURL) -> UIImage? {
         let asset = AVAsset(URL: url)
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-        imageGenerator.appliesPreferredTrackTransform = true
         
         var time = asset.duration
         time.value = min(time.value, 2)
         
+        return VideoMaskingUtils.getFrameFrom(asset, atTime: time)
+    }
+    
+    class func getFrameFrom(asset: AVAsset, atTime time: CMTime) -> UIImage? {
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
         do {
             let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
             return UIImage(CGImage: imageRef)
         } catch let error as NSError
         {
-            print("VideoMaskingUtils.thumbnailImageForVideo:: Error: \(error)")
+            print("VideoMaskingUtils.getFrameFrom:: Error: \(error)")
             return nil
         }
     }

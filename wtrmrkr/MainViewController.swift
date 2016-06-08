@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class MainViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MainViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, VideoCellPickerDelegate {
 
     @IBOutlet weak var watermarkThumbnailImage: UIImageView!
     @IBOutlet weak var videoThumbnailImageView: UIImageView!
@@ -17,8 +17,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // sliders
     @IBOutlet weak var alphaSliderView: UISlider!
     @IBOutlet weak var scaleSliderView: UISlider!
-    @IBOutlet weak var xSliderView: UISlider!
-    @IBOutlet weak var ySliderView: UISlider!
     
     @IBOutlet weak var exportButtonView: UIBarButtonItem!
     override func viewDidLoad() {
@@ -44,22 +42,30 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     var moviePath: NSURL? = nil
-    var secondMoviePath: NSURL? = nil
     func onVideoSelected(path: NSURL) {
         let thumbnail = VideoMaskingUtils.thumbnailImageForVideo(path)
         if self.moviePath == nil {
             self.moviePath = path
             self.videoThumbnailImageView.image = thumbnail
-        } else {
-            self.secondMoviePath = path
-            self.watermarkThumbnailImage.image = thumbnail
-            (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(ImageMaskingUtils.reconcileImageOrientation(thumbnail!))
         }
+    }
+    
+    func pickFrameForVideoAt(url: NSURL) {
+        
+        guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else { return }
+        videoCellPicker.delegate = self
+        videoCellPicker.asset = VideoMaskingUtils.getAVAssetAt(url)
+        self.presentViewController(videoCellPicker, animated: true, completion: nil)
+    }
+    
+    func onFrameSelected(image:UIImage) {
+        let img = ImageMaskingUtils.reconcileImageOrientation(image)
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(img)
+        self.exportButtonView.enabled = true
     }
     
     func startOver() {
         self.moviePath = nil
-        self.secondMoviePath = nil
         self.fullsizeWatermarkOriginalImage = nil
         self.videoThumbnailImageView.image = nil
         self.watermarkThumbnailImage.image = nil
@@ -87,8 +93,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         guard let path = self.moviePath else { return }
         
         let video = VideoMaskingUtils.getAVAssetAt(path)
-        let videoSize = self.videoThumbnailImageView.frame
-
+        
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
             if let error = message.object {
@@ -97,22 +102,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
         self.showSpinner()
         
-        let twoVideosOneCup = self.moviePath != nil && self.secondMoviePath != nil
-        if twoVideosOneCup {
-            
-            guard let path2 = self.secondMoviePath else { return }
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let secondVideo = VideoMaskingUtils.getAVAssetAt(path2)
-                VideoMaskingUtils.overlay(video: video, withSecondVideo: secondVideo, andAlpha: self.overlayAlpha)
-            }
-        } else {
-            let image: UIImage = self.watermarkThumbnailImage.image!
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let deets = ImageMaskingUtils.center(image, inFrame: videoSize)
-                VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
-            }
+        let image: UIImage = self.watermarkThumbnailImage.image!
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
+            VideoMaskingUtils.overlay(video: video, withImage: image, andAlpha: self.overlayAlpha, atRect: rect)
         }
-        
     }
     
     @IBAction func onTrashButtonClick(sender: UIBarButtonItem) {
@@ -177,6 +171,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // MARK: UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
 
+        var path: NSURL?
+        
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
         if (mediaType == kUTTypeImage) {
             if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -184,7 +180,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         } else if (mediaType == kUTTypeMovie) {
             if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
-                self.onVideoSelected(referenceUrl)
+                path = referenceUrl
+                self.onVideoSelected(path!)
             }
         }
         
@@ -192,6 +189,9 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             self.videoThumbnailImageView?.image != nil)
         
         picker.dismissViewControllerAnimated(true) { () -> Void in
+            if let path = path {
+                self.pickFrameForVideoAt(path)
+            }
             // background thread
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                 
