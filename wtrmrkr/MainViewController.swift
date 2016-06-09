@@ -9,16 +9,21 @@
 import UIKit
 import MobileCoreServices
 
-class MainViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MainViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, VideoCellPickerDelegate {
 
     @IBOutlet weak var watermarkThumbnailImage: UIImageView!
     @IBOutlet weak var videoThumbnailImageView: UIImageView!
+    @IBOutlet weak var pinkMaskView: UIView!
     
     // sliders
     @IBOutlet weak var alphaSliderView: UISlider!
     @IBOutlet weak var scaleSliderView: UISlider!
-    @IBOutlet weak var xSliderView: UISlider!
-    @IBOutlet weak var ySliderView: UISlider!
+    @IBOutlet weak var strokeModeControl: UISegmentedControl!
+    
+    // labels
+    @IBOutlet weak var alphaLabelView: UILabel!
+    @IBOutlet weak var sizeLabelView: UILabel!
+    @IBOutlet weak var strokeModeLabel: UILabel!
     
     @IBOutlet weak var exportButtonView: UIBarButtonItem!
     override func viewDidLoad() {
@@ -27,7 +32,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     override func shouldAutorotate() -> Bool {
@@ -38,83 +42,101 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return UIInterfaceOrientationMask.Portrait
     }
     
-//    override func prefersStatusBarHidden() -> Bool {
-//        return true
-//    }
+    func hideAlpha() {
+        self.alphaSliderView.hidden = true
+        self.alphaLabelView.hidden = true
+    }
+    
+    func showAlpha() {
+        self.alphaSliderView.hidden = false
+        self.alphaLabelView.hidden = false
+    }
+    
+    func hideSize() {
+        self.sizeLabelView.hidden = true
+        self.scaleSliderView.hidden = true
+        self.strokeModeLabel.hidden = true
+        self.strokeModeControl.hidden = true
+    }
+    
+    func showSize() {
+        self.sizeLabelView.hidden = false
+        self.scaleSliderView.hidden = false
+        self.strokeModeLabel.hidden = false
+        self.strokeModeControl.hidden = false
+    }
     
     var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
-        fullsizeWatermarkOriginalImage = image
-        self.watermarkThumbnailImage.image = image
+        self.fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(self.fullsizeWatermarkOriginalImage!)
+        self.showAlpha()
+        
+        self.videoThumbnailImageView.hidden = true
     }
     
     var moviePath: NSURL? = nil
-    var secondMoviePath: NSURL? = nil
     func onVideoSelected(path: NSURL) {
         let thumbnail = VideoMaskingUtils.thumbnailImageForVideo(path)
-        if self.moviePath == nil {
-            self.moviePath = path
-            self.videoThumbnailImageView.image = thumbnail
-        } else {
-            self.secondMoviePath = path
-            self.watermarkThumbnailImage.image = thumbnail
+        self.moviePath = path
+        self.videoThumbnailImageView.image = thumbnail
+        self.pinkMaskView.hidden = false
+        self.showSize()
+    }
+    
+    func onFrameSelected(image:UIImage) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            let img = ImageMaskingUtils.reconcileImageOrientation(image)
+            (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(img)
         }
+        dispatch_async(dispatch_get_main_queue(), {
+            self.exportButtonView.enabled = true
+        })
     }
     
     func startOver() {
         self.moviePath = nil
-        self.secondMoviePath = nil
         self.fullsizeWatermarkOriginalImage = nil
         self.videoThumbnailImageView.image = nil
         self.watermarkThumbnailImage.image = nil
         self.exportButtonView.enabled = false
+        self.pinkMaskView.hidden = true
+        self.hideAlpha()
+        self.hideSize()
+    }
+    
+    @IBAction func onStrokeModeChange(sender: UISegmentedControl) {
+        let touchView = self.watermarkThumbnailImage as? TouchableUIImageView
+        switch sender.selectedSegmentIndex {
+        case 0:
+            touchView?.brush.red = 1.0
+            touchView?.brush.green = 1.0
+            touchView?.brush.blue = 1.0
+            break
+        case 1:
+            touchView?.brush.red = 0.0
+            touchView?.brush.green = 0.0
+            touchView?.brush.blue = 0.0
+            break
+        default:
+            break
+        }
     }
     
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
         self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
+//        self.brush.alpha = CGFloat(sender.value)
+//        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.alpha = self.brush.alpha
     }
     
     @IBAction func onScaleSliderValueChange(sender: UISlider) {
         let value = CGFloat(sender.value)
-        
-        let xScale = ((self.fullsizeWatermarkOriginalImage?.size.width)! / (self.videoThumbnailImageView.image?.size.width)!) / value
-        let yScale = ((self.fullsizeWatermarkOriginalImage?.size.height)! / (self.videoThumbnailImageView.image?.size.height)!) / value
-        
-        let frame = self.watermarkThumbnailImage.frame
-        let width = max((frame.width * xScale), 0.1)
-        let height = max((frame.height * yScale), 0.1)
-        let newFrame = CGRectMake(frame.origin.x, frame.origin.y, width, height)
-        
-        self.watermarkThumbnailImage.contentMode = UIViewContentMode.ScaleAspectFit
-        self.watermarkThumbnailImage.image = ImageMaskingUtils.crop(self.fullsizeWatermarkOriginalImage!, inRect: newFrame)
+        self.brush.width = value
+        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.width = self.brush.width
     }
     
-    @IBAction func onXSliderValueChange(sender: UISlider) {
-        guard let video = self.videoThumbnailImageView.image else { return }
-        guard let image = self.watermarkThumbnailImage.image else { return }
-        let value = CGFloat(sender.value)
-        
-        let totalPossibleXRange = (video.size.width - image.size.width)
-        let newX = max((totalPossibleXRange * value), 0)
-        let frame = self.watermarkThumbnailImage.frame
-        
-        let newFrame = CGRectMake(newX, frame.origin.y, frame.width, frame.height)
-        self.watermarkThumbnailImage.frame = newFrame
-    }
-    
-    @IBAction func onYSliderValueChange(sender: UISlider) {
-        guard let video = self.videoThumbnailImageView.image else { return }
-        guard let image = self.watermarkThumbnailImage.image else { return }
-        let value = CGFloat(sender.value)
-        
-        let totalPossibleYRange = (video.size.height - image.size.height)
-        let newY = max((totalPossibleYRange * value), 0)
-        let frame = self.watermarkThumbnailImage.frame
-        
-        let newFrame = CGRectMake(frame.origin.x, newY, frame.width, frame.height)
-        self.watermarkThumbnailImage.frame = newFrame
-    }
+    var brush = Brush()
     
     var overlayAlpha = Float(1.0)
     @IBAction func onExportButtonClick(sender: AnyObject) {
@@ -122,51 +144,30 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         guard let path = self.moviePath else { return }
         
         let video = VideoMaskingUtils.getAVAssetAt(path)
-        let videoSize = self.videoThumbnailImageView.image?.size
-
+        let presenter = self
+        
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
+            
+            if message.object is NSURL {
+                let previewer = VideoPreviewPlayerViewController()
+                previewer.url = (message.object as! NSURL)
+                presenter.presentViewController(previewer, animated: true, completion: nil)
+                return
+            }
+            
             if let error = message.object {
                 print(error)
+                return
             }
         }
         self.showSpinner()
         
-        let twoVideosOneCup = self.moviePath != nil && self.secondMoviePath != nil
-        if twoVideosOneCup {
-            
-            guard let path2 = self.secondMoviePath else { return }
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let secondVideo = VideoMaskingUtils.getAVAssetAt(path2)
-                VideoMaskingUtils.overlay(video: video, withSecondVideo: secondVideo, andAlpha: self.overlayAlpha)
-            }
-        } else {
-            var image: UIImage
-            if self.fullsizeWatermarkOriginalImage != nil {
-                image = self.fullsizeWatermarkOriginalImage!
-            } else {
-                image = self.watermarkThumbnailImage.image!
-            }
-            
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                let deets = self.center(image, inVideoFrame: videoSize!)
-                VideoMaskingUtils.overlay(video: video, withImage: deets.image, andAlpha: self.overlayAlpha, atRect: deets.rect)
-            }
+        let image: UIImage = self.watermarkThumbnailImage.image!
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            let rect = CGRectMake(0, 0, image.size.width, image.size.height)
+            VideoMaskingUtils.overlay(video: video, withImage: image, andAlpha: self.overlayAlpha, atRect: rect, muted: false)
         }
-        
-    }
-    
-    func center(image: UIImage, inVideoFrame videoSize: CGSize) -> (image: UIImage, rect: CGRect) {
-        let img = ImageMaskingUtils.fit(image, inSize: videoSize)
-        
-        let width = img.size.width
-        let height = img.size.height
-        let left = (videoSize.width - width) / 2
-        let top = (videoSize.height - height) / 2
-        
-        let centeredInVideoFrame = CGRectMake(left, top, width, height)
-        
-        return (image: img, rect: centeredInVideoFrame)
     }
     
     @IBAction func onTrashButtonClick(sender: UIBarButtonItem) {
@@ -194,7 +195,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBAction func onOpenButtonClick(sender: AnyObject) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-        let movieAction = UIAlertAction(title: "Movie", style: .Default) { (action) in
+        let movieAction = UIAlertAction(title: "Video", style: .Default) { (action) in
             self.browseForMediaType([kUTTypeMovie as String])
         }
         
@@ -207,7 +208,9 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
         
         alertController.addAction(movieAction)
-        alertController.addAction(imageAction)
+        if (self.moviePath != nil && false) {
+            alertController.addAction(imageAction)
+        }
         alertController.addAction(cancelAction)
         
         alertController.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
@@ -222,6 +225,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         picker.delegate = self
         picker.sourceType = .PhotoLibrary
         picker.mediaTypes = mediaTypes
+        picker.allowsEditing = true
         self.presentViewController(picker, animated: true) { () -> Void in
             // no-op
         }
@@ -229,26 +233,36 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-
+        
+        self.startOver()
+        var path: NSURL?
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
         if (mediaType == kUTTypeImage) {
             if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 self.onWatermarkImageSelected(image)
             }
-        } else if (mediaType == kUTTypeMovie) {
+        } else
+        if (mediaType == kUTTypeMovie) {
             if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
-                self.onVideoSelected(referenceUrl)
+                path = referenceUrl
+                self.onVideoSelected(path!)
             }
         }
         
-        self.exportButtonView.enabled = (self.watermarkThumbnailImage?.image != nil &&
-            self.videoThumbnailImageView?.image != nil)
+        var presenter: MainViewController?
+        guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else {
+            picker.dismissViewControllerAnimated(true, completion: nil)
+            return
+        }
+        
+        if path != nil {
+            videoCellPicker.delegate = self
+            videoCellPicker.asset = VideoMaskingUtils.getAVAssetAt(path!)
+            presenter = self
+        }
         
         picker.dismissViewControllerAnimated(true) { () -> Void in
-            // background thread
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                
-            }
+            presenter?.presentViewController(videoCellPicker, animated: true, completion: nil)
         }
     }
     

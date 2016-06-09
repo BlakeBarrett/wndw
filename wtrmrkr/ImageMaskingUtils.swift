@@ -188,6 +188,21 @@ class ImageMaskingUtils {
         return image
     }
     
+    class func center(image: UIImage, inFrame rect: CGRect) -> (image: UIImage, rect: CGRect) {
+        
+        let size = rect.size
+        let img = ImageMaskingUtils.fit(image, inSize: size)
+        
+        let width = img.size.width
+        let height = img.size.height
+        let left = (size.width - width) / 2
+        let top = (size.height - height) / 2
+        
+        let centeredInFrame = CGRectMake(left, top, width, height)
+        
+        return (image: img, rect: centeredInFrame)
+    }
+    
     class func crop(image: UIImage, inRect rect: CGRect) -> UIImage {
         let imageRef = CGImageCreateWithImageInRect(image.CGImage, rect)
         return UIImage(CGImage: imageRef!)

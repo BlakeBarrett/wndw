@@ -14,22 +14,43 @@ import Foundation
 import UIKit
 
 class VideoMaskingUtils {
-
+    
+    class func thumbnailsFor(asset: AVAsset, howMany count: Int) -> [UIImage] {
+        var images = [UIImage]()
+        
+        let totalDuration = asset.duration.seconds
+        let sliceDuation = (totalDuration / Double(count))
+        
+        for i in 1...count {
+            let timescale = asset.duration.timescale
+            let value = floor(sliceDuation * Double(i) * Double(timescale))
+            var time = CMTimeMake(1, timescale)
+            time.value = CMTimeValue(value)
+            guard let image = VideoMaskingUtils.getFrameFrom(asset, atTime: time) else { continue }
+            images.append(image)
+        }
+        return images
+    }
+    
     // Lifted straight up from here: http://stackoverflow.com/questions/7501413/create-thumbnail-from-a-video-url-in-iphone-sdk
     class func thumbnailImageForVideo(url:NSURL) -> UIImage? {
         let asset = AVAsset(URL: url)
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-        imageGenerator.appliesPreferredTrackTransform = true
         
         var time = asset.duration
         time.value = min(time.value, 2)
         
+        return VideoMaskingUtils.getFrameFrom(asset, atTime: time)
+    }
+    
+    class func getFrameFrom(asset: AVAsset, atTime time: CMTime) -> UIImage? {
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
         do {
             let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
             return UIImage(CGImage: imageRef)
         } catch let error as NSError
         {
-            print("VideoMaskingUtils.thumbnailImageForVideo:: Error: \(error)")
+            print("VideoMaskingUtils.getFrameFrom:: Error: \(error)")
             return nil
         }
     }
@@ -70,27 +91,27 @@ class VideoMaskingUtils {
 
         let firstApproach = false
         if firstApproach {
-            let mainInstruction = AVMutableVideoCompositionInstruction()
-            mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
-            mainInstruction.backgroundColor = UIColor.redColor().CGColor
-            
-            let firstlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstTrack)
-            firstlayerInstruction.setTransform(firstAsset.preferredTransform, atTime: kCMTimeZero)
-            
-            let secondInstruction = AVMutableVideoCompositionInstruction()
-            secondInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
-            let backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: alpha)
-            secondInstruction.backgroundColor = backgroundColor.CGColor
-            
-            let secondlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: secondTrack)
-            secondlayerInstruction.setTransform(secondAsset.preferredTransform, atTime: kCMTimeZero)
-            
-            secondInstruction.layerInstructions = [secondlayerInstruction]
-            
-            mainInstruction.layerInstructions = [firstlayerInstruction]//, secondlayerInstruction]
-            
-            videoComposition.instructions = [mainInstruction, secondInstruction]
-
+//            let mainInstruction = AVMutableVideoCompositionInstruction()
+//            mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
+//            mainInstruction.backgroundColor = UIColor.redColor().CGColor
+//            
+//            let firstlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstTrack)
+//            firstlayerInstruction.setTransform(firstAsset.preferredTransform, atTime: kCMTimeZero)
+//            
+//            let secondInstruction = AVMutableVideoCompositionInstruction()
+//            secondInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
+//            let backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: alpha)
+//            secondInstruction.backgroundColor = backgroundColor.CGColor
+//            
+//            let secondlayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: secondTrack)
+//            secondlayerInstruction.setTransform(secondAsset.preferredTransform, atTime: kCMTimeZero)
+//            
+//            secondInstruction.layerInstructions = [secondlayerInstruction]
+//            
+//            mainInstruction.layerInstructions = [firstlayerInstruction]//, secondlayerInstruction]
+//            
+//            videoComposition.instructions = [mainInstruction, secondInstruction]
+//
         } else {
             let firstLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: firstMediaTrack)
             firstLayerInstruction.setTransform(firstMediaTrack.preferredTransform, atTime: kCMTimeZero)
@@ -116,7 +137,7 @@ class VideoMaskingUtils {
     }
     
     
-    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?) {
+    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?, muted: Bool) {
         // Most of this code was translated into Swift 2.2 from this example here:
         //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
         
@@ -141,7 +162,9 @@ class VideoMaskingUtils {
         let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, sourceVideo.duration)
         do {
             try mutableVideoCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrack, atTime: kCMTimeZero)
-            try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+            if !muted {
+                try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+            }
         } catch (let error) {
             print(error)
         }
@@ -161,7 +184,6 @@ class VideoMaskingUtils {
         
         let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrack)
         layerInstruction.setTransform(mutableVideoCompositionTrack.preferredTransform, atTime: kCMTimeZero)
-        layerInstruction.setOpacity(0.0, atTime: sourceVideoDuration.duration)
         
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = sourceVideoDuration
@@ -212,14 +234,17 @@ class VideoMaskingUtils {
             case .Completed:
                 // we can be confident that there is a URL because
                 // we got this far. Otherwise it would've failed.
-                UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path!, nil, nil, nil)
+                let url = exporter.outputURL!
+                UISaveVideoAtPathToSavedPhotosAlbum(url.path!, nil, nil, nil)
                 print("VideoMaskingUtils.exportVideo SUCCESS!")
                 if exporter.error != nil {
                     print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
                     print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                } else {
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: url)
                 }
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
                 break
             
             case .Exporting:
@@ -233,7 +258,7 @@ class VideoMaskingUtils {
                 print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
                 print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter)
                 break
             
             default: break
