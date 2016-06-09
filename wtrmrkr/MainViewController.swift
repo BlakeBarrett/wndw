@@ -243,9 +243,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         } else
         if (mediaType == kUTTypeMovie) {
-            if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
+            // trimmed/edited videos
+            if let trimmedUrl = info[UIImagePickerControllerMediaURL] as? NSURL {
+                path = trimmedUrl
+            } else if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
                 path = referenceUrl
-                self.onVideoSelected(path!)
+            }
+            
+            if let path = path {
+                self.onVideoSelected(path)
             }
         }
         
