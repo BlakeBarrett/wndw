@@ -18,6 +18,10 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBOutlet weak var alphaSliderView: UISlider!
     @IBOutlet weak var scaleSliderView: UISlider!
     
+    // labels
+    @IBOutlet weak var alphaLabelView: UILabel!
+    @IBOutlet weak var sizeLabelView: UILabel!
+    
     @IBOutlet weak var exportButtonView: UIBarButtonItem!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,10 +39,33 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return UIInterfaceOrientationMask.Portrait
     }
     
+    func hideAlpha() {
+        self.alphaSliderView.hidden = true
+        self.alphaLabelView.hidden = true
+    }
+    
+    func showAlpha() {
+        self.alphaSliderView.hidden = false
+        self.alphaLabelView.hidden = false
+    }
+    
+    func hideSize() {
+        self.sizeLabelView.hidden = true
+        self.scaleSliderView.hidden = true
+    }
+    
+    func showSize() {
+        self.sizeLabelView.hidden = false
+        self.scaleSliderView.hidden = false
+    }
+    
     var fullsizeWatermarkOriginalImage: UIImage?
     func onWatermarkImageSelected(image: UIImage) {
         self.fullsizeWatermarkOriginalImage = ImageMaskingUtils.reconcileImageOrientation(image)
         (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(self.fullsizeWatermarkOriginalImage!)
+        self.showAlpha()
+        
+        self.videoThumbnailImageView.hidden = true
     }
     
     var moviePath: NSURL? = nil
@@ -47,11 +74,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         if self.moviePath == nil {
             self.moviePath = path
             self.videoThumbnailImageView.image = thumbnail
+            self.showSize()
         }
     }
     
     func pickFrameForVideoAt(url: NSURL) {
-        
         guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else { return }
         videoCellPicker.delegate = self
         videoCellPicker.asset = VideoMaskingUtils.getAVAssetAt(url)
@@ -70,6 +97,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.videoThumbnailImageView.image = nil
         self.watermarkThumbnailImage.image = nil
         self.exportButtonView.enabled = false
+        self.hideAlpha()
+        self.hideSize()
     }
     
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
@@ -105,7 +134,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let image: UIImage = self.watermarkThumbnailImage.image!
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
             let rect = CGRectMake(0, 0, image.size.width, image.size.height)
-            VideoMaskingUtils.overlay(video: video, withImage: image, andAlpha: self.overlayAlpha, atRect: rect)
+            VideoMaskingUtils.overlay(video: video, withImage: image, andAlpha: self.overlayAlpha, atRect: rect, muted: false)
         }
     }
     
@@ -174,11 +203,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         var path: NSURL?
         
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
-//        if (mediaType == kUTTypeImage) {
-//            if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-//                self.onWatermarkImageSelected(image)
-//            }
-//        } else
+        if (mediaType == kUTTypeImage) {
+            if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+                self.onWatermarkImageSelected(image)
+            }
+        } else
         if (mediaType == kUTTypeMovie) {
             if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
                 path = referenceUrl

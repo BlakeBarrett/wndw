@@ -137,7 +137,7 @@ class VideoMaskingUtils {
     }
     
     
-    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?) {
+    class func overlay(video sourceVideo: AVURLAsset, withImage image: UIImage, andAlpha alpha: Float, atRect imageRect: CGRect?, muted: Bool) {
         // Most of this code was translated into Swift 2.2 from this example here:
         //   https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/Articles/03_Editing.html
         
@@ -162,7 +162,9 @@ class VideoMaskingUtils {
         let sourceVideoDuration = CMTimeRangeMake(kCMTimeZero, sourceVideo.duration)
         do {
             try mutableVideoCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: videoAssetTrack, atTime: kCMTimeZero)
-            try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+            if !muted {
+                try mutableAudioCompositionTrack.insertTimeRange(sourceVideoDuration, ofTrack: audioAssetTrack, atTime: kCMTimeZero)
+            }
         } catch (let error) {
             print(error)
         }
@@ -182,7 +184,6 @@ class VideoMaskingUtils {
         
         let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: mutableVideoCompositionTrack)
         layerInstruction.setTransform(mutableVideoCompositionTrack.preferredTransform, atTime: kCMTimeZero)
-        layerInstruction.setOpacity(0.0, atTime: sourceVideoDuration.duration)
         
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = sourceVideoDuration
