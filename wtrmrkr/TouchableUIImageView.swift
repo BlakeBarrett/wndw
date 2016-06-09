@@ -39,7 +39,7 @@ class TouchableUIImageView: UIImageView {
     }
     
     // MARK: - Line Drawing Code
-    var brush: Brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 10.0, alpha: 1.0)
+    var brush: Brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 50.0, alpha: 1.0)
     func setBrush(brush: Brush) {
         self.brush = brush
     }

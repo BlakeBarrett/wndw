@@ -234,14 +234,17 @@ class VideoMaskingUtils {
             case .Completed:
                 // we can be confident that there is a URL because
                 // we got this far. Otherwise it would've failed.
-                UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path!, nil, nil, nil)
+                let url = exporter.outputURL!
+                UISaveVideoAtPathToSavedPhotosAlbum(url.path!, nil, nil, nil)
                 print("VideoMaskingUtils.exportVideo SUCCESS!")
                 if exporter.error != nil {
                     print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
                     print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                } else {
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: url)
                 }
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
                 break
             
             case .Exporting:
@@ -255,7 +258,7 @@ class VideoMaskingUtils {
                 print("VideoMaskingUtils.exportVideo Error: \(exporter.error)")
                 print("VideoMaskingUtils.exportVideo Description: \(exporter.description)")
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter)
                 break
             
             default: break

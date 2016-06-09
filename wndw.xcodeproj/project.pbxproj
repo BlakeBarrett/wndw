@@ -18,6 +18,7 @@
 		256BAA7A1CF3975A0005079A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA791CF3975A0005079A /* Assets.xcassets */; };
 		256BAA7D1CF3975A0005079A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 256BAA7B1CF3975A0005079A /* LaunchScreen.storyboard */; };
 		256BAA881CF3A8A40005079A /* VideoMaskingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */; };
+		256F7CB41D095E6100DD68DD /* VideoPreviewPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256F7CB31D095E6100DD68DD /* VideoPreviewPlayerViewController.swift */; };
 		25788C291D02BA9B00942B6E /* DrawingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25788C281D02BA9B00942B6E /* DrawingUtils.swift */; };
 		25788C2C1D02BDAA00942B6E /* Brush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25788C2B1D02BDAA00942B6E /* Brush.swift */; };
 		25788C2E1D02CF7800942B6E /* TouchableUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25788C2D1D02CF7800942B6E /* TouchableUIImageView.swift */; };
@@ -37,6 +38,7 @@
 		256BAA7C1CF3975A0005079A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		256BAA7E1CF3975A0005079A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		256BAA871CF3A8A40005079A /* VideoMaskingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMaskingUtils.swift; sourceTree = "<group>"; };
+		256F7CB31D095E6100DD68DD /* VideoPreviewPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPreviewPlayerViewController.swift; sourceTree = "<group>"; };
 		25788C281D02BA9B00942B6E /* DrawingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingUtils.swift; sourceTree = "<group>"; };
 		25788C2B1D02BDAA00942B6E /* Brush.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Brush.swift; sourceTree = "<group>"; };
 		25788C2D1D02CF7800942B6E /* TouchableUIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchableUIImageView.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				25788C281D02BA9B00942B6E /* DrawingUtils.swift */,
 				25788C2D1D02CF7800942B6E /* TouchableUIImageView.swift */,
 				2546DE751D07B397009393E1 /* VideoCellPickerViewController.swift */,
+				256F7CB31D095E6100DD68DD /* VideoPreviewPlayerViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 				2554738E1CF9456F0078B7B2 /* ProgressViewController.swift in Sources */,
 				25788C2E1D02CF7800942B6E /* TouchableUIImageView.swift in Sources */,
 				2554738C1CF7B8B70078B7B2 /* ImageMaskingUtils.swift in Sources */,
+				256F7CB41D095E6100DD68DD /* VideoPreviewPlayerViewController.swift in Sources */,
 				256BAA701CF3975A0005079A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -144,11 +144,21 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         guard let path = self.moviePath else { return }
         
         let video = VideoMaskingUtils.getAVAssetAt(path)
+        let presenter = self
         
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
             self.hideSpinner()
+            
+            if message.object is NSURL {
+                let previewer = VideoPreviewPlayerViewController()
+                previewer.url = (message.object as! NSURL)
+                presenter.presentViewController(previewer, animated: true, completion: nil)
+                return
+            }
+            
             if let error = message.object {
                 print(error)
+                return
             }
         }
         self.showSpinner()
