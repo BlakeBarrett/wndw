@@ -13,14 +13,17 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 
     @IBOutlet weak var watermarkThumbnailImage: UIImageView!
     @IBOutlet weak var videoThumbnailImageView: UIImageView!
+    @IBOutlet weak var pinkMaskView: UIView!
     
     // sliders
     @IBOutlet weak var alphaSliderView: UISlider!
     @IBOutlet weak var scaleSliderView: UISlider!
+    @IBOutlet weak var strokeModeControl: UISegmentedControl!
     
     // labels
     @IBOutlet weak var alphaLabelView: UILabel!
     @IBOutlet weak var sizeLabelView: UILabel!
+    @IBOutlet weak var strokeModeLabel: UILabel!
     
     @IBOutlet weak var exportButtonView: UIBarButtonItem!
     override func viewDidLoad() {
@@ -52,11 +55,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func hideSize() {
         self.sizeLabelView.hidden = true
         self.scaleSliderView.hidden = true
+        self.strokeModeLabel.hidden = true
+        self.strokeModeControl.hidden = true
     }
     
     func showSize() {
         self.sizeLabelView.hidden = false
         self.scaleSliderView.hidden = false
+        self.strokeModeLabel.hidden = false
+        self.strokeModeControl.hidden = false
     }
     
     var fullsizeWatermarkOriginalImage: UIImage?
@@ -71,11 +78,10 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     var moviePath: NSURL? = nil
     func onVideoSelected(path: NSURL) {
         let thumbnail = VideoMaskingUtils.thumbnailImageForVideo(path)
-        if self.moviePath == nil {
-            self.moviePath = path
-            self.videoThumbnailImageView.image = thumbnail
-            self.showSize()
-        }
+        self.moviePath = path
+        self.videoThumbnailImageView.image = thumbnail
+        self.pinkMaskView.hidden = false
+        self.showSize()
     }
     
     func onFrameSelected(image:UIImage) {
@@ -94,15 +100,34 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.videoThumbnailImageView.image = nil
         self.watermarkThumbnailImage.image = nil
         self.exportButtonView.enabled = false
+        self.pinkMaskView.hidden = true
         self.hideAlpha()
         self.hideSize()
+    }
+    
+    @IBAction func onStrokeModeChange(sender: UISegmentedControl) {
+        let touchView = self.watermarkThumbnailImage as? TouchableUIImageView
+        switch sender.selectedSegmentIndex {
+        case 0:
+            touchView?.brush.red = 1.0
+            touchView?.brush.green = 1.0
+            touchView?.brush.blue = 1.0
+            break
+        case 1:
+            touchView?.brush.red = 0.0
+            touchView?.brush.green = 0.0
+            touchView?.brush.blue = 0.0
+            break
+        default:
+            break
+        }
     }
     
     @IBAction func onAlphaSliderValueChange(sender: UISlider) {
         self.overlayAlpha = Float(sender.value)
         self.watermarkThumbnailImage.alpha = CGFloat(self.overlayAlpha)
-        self.brush.alpha = CGFloat(sender.value)
-        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.alpha = self.brush.alpha
+//        self.brush.alpha = CGFloat(sender.value)
+//        (self.watermarkThumbnailImage as? TouchableUIImageView)?.brush.alpha = self.brush.alpha
     }
     
     @IBAction func onScaleSliderValueChange(sender: UISlider) {
@@ -196,9 +221,9 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-
-        var path: NSURL?
         
+        self.startOver()
+        var path: NSURL?
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
         if (mediaType == kUTTypeImage) {
             if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -211,11 +236,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 self.onVideoSelected(path!)
             }
         }
-        
-        self.exportButtonView.enabled = (self.watermarkThumbnailImage?.image != nil &&
-            self.videoThumbnailImageView?.image != nil)
-        
-        
         
         var presenter: MainViewController?
         guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else {
