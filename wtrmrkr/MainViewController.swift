@@ -199,16 +199,18 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             self.browseForMediaType([kUTTypeMovie as String])
         }
         
-//        let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
-//            self.browseForMediaType([kUTTypeImage as String, kUTTypeMovie as String])
-//        }
+        let imageAction = UIAlertAction(title: "Overlay", style: .Default) { (action) in
+            self.browseForMediaType([kUTTypeImage as String, kUTTypeMovie as String])
+        }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
             
         }
         
         alertController.addAction(movieAction)
-//        alertController.addAction(imageAction)
+        if (self.moviePath != nil && false) {
+            alertController.addAction(imageAction)
+        }
         alertController.addAction(cancelAction)
         
         alertController.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
