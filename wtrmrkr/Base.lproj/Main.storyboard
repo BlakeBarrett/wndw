@@ -103,7 +103,7 @@
                                             <action selector="onAlphaSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="Ioe-Id-L5u"/>
                                         </connections>
                                     </slider>
-                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="25" minValue="1" maxValue="50" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
+                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50" minValue="1" maxValue="50" translatesAutoresizingMaskIntoConstraints="NO" id="sUB-WA-wDg">
                                         <rect key="frame" x="151" y="9" width="403" height="31"/>
                                         <color key="tintColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -222,6 +222,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="K8c-h3-kTy">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="jea-JN-VDK"/>
+                                    <barButtonItem title="Select Frame" id="CCV-4w-miO"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="o8x-tY-nIC"/>
+                                </items>
+                            </toolbar>
                             <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kyk-t9-xca">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
@@ -273,17 +281,10 @@
                                     <outlet property="delegate" destination="Vgb-ee-aw4" id="mBP-V5-NeO"/>
                                 </connections>
                             </tableView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="K8c-h3-kTy">
-                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="jea-JN-VDK"/>
-                                    <barButtonItem title="Select Frame" id="CCV-4w-miO"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="o8x-tY-nIC"/>
-                                </items>
-                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Th4-dD-lSA" firstAttribute="top" secondItem="R0A-dI-Owf" secondAttribute="bottom" constant="44" id="5xw-Gp-xpC"/>
                             <constraint firstItem="R0A-dI-Owf" firstAttribute="leading" secondItem="3sN-ag-TVe" secondAttribute="leadingMargin" constant="-20" id="9mm-PA-GNx"/>
                             <constraint firstAttribute="trailingMargin" secondItem="R0A-dI-Owf" secondAttribute="trailing" constant="-20" id="Edg-Bw-1rv"/>
                             <constraint firstItem="R0A-dI-Owf" firstAttribute="top" secondItem="K8c-h3-kTy" secondAttribute="bottom" id="O7Y-Br-gqR"/>
@@ -295,6 +296,11 @@
                             <constraint firstItem="kyk-t9-xca" firstAttribute="leading" secondItem="3sN-ag-TVe" secondAttribute="leadingMargin" constant="-20" id="jRa-ad-QfV"/>
                             <constraint firstItem="kyk-t9-xca" firstAttribute="top" secondItem="R0A-dI-Owf" secondAttribute="bottom" id="tVZ-7p-dAZ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="kyk-t9-xca"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="R0A-dI-Owf" id="dFh-W7-vda"/>
