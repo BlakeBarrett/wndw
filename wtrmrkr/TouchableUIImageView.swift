@@ -14,8 +14,10 @@ class TouchableUIImageView: UIImageView {
     
     override var image: UIImage? {
         didSet {
-            let rect = ImageMaskingUtils.center(self.image!, inFrame: self.frame).rect
-            self.rect = rect
+            if let img = self.image {
+                let rect = ImageMaskingUtils.center(img, inFrame: self.frame).rect
+                self.rect = rect
+            }
         }
     }
     

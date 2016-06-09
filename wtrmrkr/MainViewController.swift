@@ -78,17 +78,14 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
-    func pickFrameForVideoAt(url: NSURL) {
-        guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else { return }
-        videoCellPicker.delegate = self
-        videoCellPicker.asset = VideoMaskingUtils.getAVAssetAt(url)
-        self.presentViewController(videoCellPicker, animated: true, completion: nil)
-    }
-    
     func onFrameSelected(image:UIImage) {
-        let img = ImageMaskingUtils.reconcileImageOrientation(image)
-        (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(img)
-        self.exportButtonView.enabled = true
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            let img = ImageMaskingUtils.reconcileImageOrientation(image)
+            (self.watermarkThumbnailImage as? TouchableUIImageView)?.setOriginalImage(img)
+        }
+        dispatch_async(dispatch_get_main_queue(), {
+            self.exportButtonView.enabled = true
+        })
     }
     
     func startOver() {
@@ -218,14 +215,22 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.exportButtonView.enabled = (self.watermarkThumbnailImage?.image != nil &&
             self.videoThumbnailImageView?.image != nil)
         
+        
+        
+        var presenter: MainViewController?
+        guard let videoCellPicker = self.storyboard?.instantiateViewControllerWithIdentifier("VideoCellPicker") as? VideoCellPickerViewController else {
+            picker.dismissViewControllerAnimated(true, completion: nil)
+            return
+        }
+        
+        if path != nil {
+            videoCellPicker.delegate = self
+            videoCellPicker.asset = VideoMaskingUtils.getAVAssetAt(path!)
+            presenter = self
+        }
+        
         picker.dismissViewControllerAnimated(true) { () -> Void in
-            if let path = path {
-                self.pickFrameForVideoAt(path)
-            }
-            // background thread
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                
-            }
+            presenter?.presentViewController(videoCellPicker, animated: true, completion: nil)
         }
     }
     
