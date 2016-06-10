@@ -249,25 +249,26 @@
                                 <color key="sectionIndexColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="videoFrameCellReuseIdentifier" rowHeight="200" id="B4f-Jv-gwe" customClass="VideoCellPickerViewCell" customModule="wndw" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="200"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="videoFrameCellReuseIdentifier" id="B4f-Jv-gwe" customClass="VideoCellPickerViewCell" customModule="wndw" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="168"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B4f-Jv-gwe" id="Cto-fC-5bg">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="199"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="167"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0le-U9-B0Y">
-                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="199"/>
+                                                <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="0le-U9-B0Y">
+                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="167"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="leading" secondItem="Cto-fC-5bg" secondAttribute="leading" id="D2C-4B-xWf"/>
-                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="top" secondItem="Cto-fC-5bg" secondAttribute="top" id="Sgp-C0-qXi"/>
-                                                <constraint firstAttribute="bottom" secondItem="0le-U9-B0Y" secondAttribute="bottom" id="Tgf-Im-WHX"/>
-                                                <constraint firstAttribute="trailing" secondItem="0le-U9-B0Y" secondAttribute="trailing" id="cNR-2s-UYv"/>
-                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="centerX" secondItem="Cto-fC-5bg" secondAttribute="centerX" id="znj-3k-lrM"/>
+                                                <constraint firstAttribute="bottom" secondItem="0le-U9-B0Y" secondAttribute="bottom" id="LSH-b5-N7L"/>
+                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="top" secondItem="Cto-fC-5bg" secondAttribute="top" id="LSL-1v-MfY"/>
+                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="centerY" secondItem="Cto-fC-5bg" secondAttribute="centerY" id="MMa-0z-QcZ"/>
+                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="centerX" secondItem="Cto-fC-5bg" secondAttribute="centerX" id="VmF-Vi-C1z"/>
+                                                <constraint firstAttribute="trailing" secondItem="0le-U9-B0Y" secondAttribute="trailing" id="fHZ-HT-0vi"/>
+                                                <constraint firstItem="0le-U9-B0Y" firstAttribute="leading" secondItem="Cto-fC-5bg" secondAttribute="leading" id="iSk-XM-exL"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

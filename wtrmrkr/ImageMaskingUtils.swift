@@ -118,7 +118,9 @@ class ImageMaskingUtils {
             return image
         }
         let context = CIContext(options: [kCIContextUseSoftwareRenderer: false])
-        return UIImage(CGImage: context.createCGImage(result, fromRect: result.extent))
+        let img = UIImage(CGImage: context.createCGImage(result, fromRect: result.extent))
+        UIGraphicsEndImageContext()
+        return img
     }
     
     /**
@@ -205,7 +207,9 @@ class ImageMaskingUtils {
     
     class func crop(image: UIImage, inRect rect: CGRect) -> UIImage {
         let imageRef = CGImageCreateWithImageInRect(image.CGImage, rect)
-        return UIImage(CGImage: imageRef!)
+        let img = UIImage(CGImage: imageRef!)
+        UIGraphicsEndImageContext()
+        return img
     }
     
     class func fit(image:UIImage, inSize: CGSize) -> UIImage {

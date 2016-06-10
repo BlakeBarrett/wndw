@@ -34,9 +34,24 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.reloadData()
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
+        switch UIDevice.currentDevice().userInterfaceIdiom {
+        case .Pad:
+            self.tableView.estimatedRowHeight = 432.0
+            break
+        case .Phone:
+            self.tableView.estimatedRowHeight = 180.0
+            break
+        default:
+            self.tableView.estimatedRowHeight = 200.0
+            break
+        }
+        
+        self.tableView.reloadData()
     }
     
     // nobody else need see these
@@ -48,6 +63,7 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
     func populateItemsWithVideoFrames() {
         guard let asset = self.asset else { return }
         self.items = VideoMaskingUtils.thumbnailsFor(asset, howMany: 20)
+        self.cellHeightFor(self.items.first)
     }
     
     func onFrameSelected() {
@@ -86,6 +102,37 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.selectedImage = items[indexPath.row]
         self.onFrameSelected()
+    }
+    
+    // variable row height
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return cellHeightFor(self.items.first)
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return cellHeightFor(self.items.first)
+    }
+    
+    var estimatedRowHeight: CGFloat?
+    func cellHeightFor(image: UIImage?) -> CGFloat {
+        if let _ = self.estimatedRowHeight {
+            return self.estimatedRowHeight!
+        }
+        
+        let size = image?.size
+        let width = size?.width
+        let height = size?.height
+        let aspectRatio = (width! / height!)
+        
+        var tableWidth: CGFloat
+        if let _ = self.tableView {
+            tableWidth = self.tableView.frame.width
+        } else {
+            tableWidth = (UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Pad ? 768.0 : 320.0)
+        }
+        
+        self.estimatedRowHeight =  (tableWidth / aspectRatio)
+        return self.estimatedRowHeight!
     }
     
 }
