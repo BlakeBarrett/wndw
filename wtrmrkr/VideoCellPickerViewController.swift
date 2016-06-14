@@ -93,6 +93,7 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
         let item = items[indexPath.row]
         
         dispatch_async(dispatch_get_main_queue(), {
+            cell.backgroundColor = UIColor.clearColor()
             cell.backgroundImageView.image = item
         })
         
@@ -131,7 +132,7 @@ class VideoCellPickerViewController: UIViewController, UITableViewDelegate, UITa
             tableWidth = (UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Pad ? 768.0 : 320.0)
         }
         
-        self.estimatedRowHeight =  (tableWidth / aspectRatio)
+        self.estimatedRowHeight =  min((tableWidth / aspectRatio), (self.view.bounds.height / 2))
         return self.estimatedRowHeight!
     }
     

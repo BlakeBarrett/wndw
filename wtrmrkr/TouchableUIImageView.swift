@@ -17,14 +17,18 @@ class TouchableUIImageView: UIImageView {
             if let img = self.image {
                 let rect = ImageMaskingUtils.center(img, inFrame: self.frame).rect
                 self.rect = rect
+                self.frame = rect
+                self.bounds = rect
+                
+                self.invalidateIntrinsicContentSize()
             }
         }
     }
     
     override func layoutSubviews() {
-        self.mask.frame = self.frame
-        self.temp.frame = self.frame
-        self.masked.frame = self.frame
+        self.mask.frame = self.rect
+        self.temp.frame = self.rect
+        self.masked.frame = self.rect
     }
     
     func setOriginalImage(image: UIImage) {
@@ -39,7 +43,7 @@ class TouchableUIImageView: UIImageView {
     }
     
     // MARK: - Line Drawing Code
-    var brush: Brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 50.0, alpha: 1.0)
+    var brush = Brush(red: 1.0 ,green: 1.0, blue: 1.0, width: 50.0, alpha: 1.0)
     func setBrush(brush: Brush) {
         self.brush = brush
     }
@@ -50,7 +54,8 @@ class TouchableUIImageView: UIImageView {
         if !touchesEnabled { return }
         swiped = false
         if let touch = touches.first {
-            lastPoint = touch.locationInView(self)
+            let view = UIView(frame: self.rect)
+            lastPoint = touch.locationInView(view)
         }
     }
     
@@ -58,7 +63,8 @@ class TouchableUIImageView: UIImageView {
         if !touchesEnabled { return }
         swiped = true
         if let touch = touches.first {
-            let currentPoint = touch.locationInView(self)
+            let view = UIView(frame: self.rect)
+            let currentPoint = touch.locationInView(view)
             self.temp.image = DrawingUtils.drawLineFrom(lastPoint, toPoint: currentPoint, onImage: self.temp.image!, inFrame: self.rect, withBrush: self.brush)
             lastPoint = currentPoint
         }
